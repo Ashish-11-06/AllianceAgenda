@@ -1,0 +1,90 @@
+ /* Add your custom CSS here */
+ .navbar-brand {
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.navbar-nav .nav-link {
+    color: white;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #f0ad4e;
+}
+
+.jumbotron {
+    background-image: url("https://images.unsplash.com/photo-1508615070457-7baeba4003e1?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80");
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    color: white;
+}
+
+.jumbotron .display-4 {
+    font-weight: bold;
+    text-shadow: 2px 2px 4px black;
+}
+
+.jumbotron .lead {
+    text-shadow: 1px 1px 2px black;
+}
+
+.jumbotron .btn {
+    background-color: #f0ad4e;
+    border: none;
+}
+
+.jumbotron .btn:hover {
+    background-color: #ec971f;
+}
+
+.features {
+    padding: 40px 0;
+}
+
+.features .card {
+    border: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.features .card:hover {
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+}
+
+.features .card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+.features .card-title {
+    font-weight: bold;
+}
+
+.features .card-text {
+    color: #777;
+}
+
+.footer {
+    background-color: #333;
+    color: white;
+    padding: 20px 0;
+}
+
+.footer .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer .social-icons a {
+    color: white;
+    margin: 0 10px;
+}
+
+.footer .social-icons a:hover {
+    color: #f0ad4e;
+}
+
+.footer p {
+    margin: 0;
+}
