@@ -32,6 +32,7 @@
 .jumbotron .btn {
     background-color: #f0ad4e;
     border: none;
+    border-radius: 10px;
 }
 
 .jumbotron .btn:hover {

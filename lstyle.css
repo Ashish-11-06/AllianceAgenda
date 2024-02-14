@@ -1,12 +1,12 @@
 body, html {
   height:100%;
-	background: #1c1e21;
+	
   	overflow-x: hidden;
 	font-family: 'Dosis', sans-serif;
 }
 
-btn {
-	border-radius: 0
+.btn {
+	border-radius: 2px, 2px;
 
   
 }
@@ -54,7 +54,7 @@ btn {
 div#form {
 	color: #fff;
 	background-attachment: scroll;
-	background: #1c1e21 url(https://static.pexels.com/photos/8819/warsaw.jpg);
+	background:  url('signin.jpg');
 	background-position: center center;
 	background-repeat: none;
 	-webkit-background-size: cover;
@@ -75,12 +75,12 @@ div#form {
 	margin-bottom: 0px;
 }
 #userform {
-	background: rgba(0,0,0,0.8);
+	background: rgba(74, 138, 168, 0.8);
 	margin: 20px 0 20px 0
 }
  @media (min-width: 768px) {
 #userform {
-	background: rgba(0,0,0,0.8);
+	background: rgba(49, 44, 50, 0.742);
 	margin: 50px 0 20px 0
 }
 }
@@ -119,7 +119,8 @@ div#form {
 	-moz-transition: all .6s;
 	transition: all .6s;
 }
-#userform .nav-tabs > li.active > a, #userform .nav-tabs > li.active > a:hover, #userform .nav-tabs > li.active > a:focus {
+#userform .nav-tabs > li.active 
+ a, #userform .nav-tabs > li.active > a:hover, #userform .nav-tabs > li.active > a:focus {
 	color: #2aaec8;
 	cursor: default;
 	background-color: transparent;
@@ -239,6 +240,7 @@ font-weight: 700;
 #userform #login .form-group label .req {
 	margin: 2px;
 	color: #2aaec8;
+	
 }
 #userform #login .form-group label.active {
 	-webkit-transform: translateY(0px);
@@ -253,4 +255,10 @@ font-weight: 700;
 
 .mrgn-30-top {
 	margin-top: 30px
+}
+.form-group{
+	border-radius: 10px 20px; 
+}
+.container{
+	
 }
