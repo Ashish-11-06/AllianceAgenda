@@ -1,0 +1,22 @@
+body {
+    font-family: Arial, sans-serif;
+  }
+  
+  #messages-container {
+    height: 300px;
+    overflow-y: scroll;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  #message-input {
+    width: 80%;
+    padding: 5px;
+    margin-right: 5px;
+  }
+  
+  #send-button {
+    padding: 5px 10px;
+  }
+  
