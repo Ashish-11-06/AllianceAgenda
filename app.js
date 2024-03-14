@@ -8,6 +8,8 @@ const port = 3000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(express.static(path.join(__dirname, 'public')));
+
 // // Define a route handler for the root path
 // app.get('/login-page', (req, res) => {
 //   // Use 'path' module to get the absolute path to the HTML file
@@ -69,6 +71,10 @@ app.get('/deleteRows.html', (req, res) => {
   res.sendFile(__dirname + '/deleteRows.html');
 });
 
+app.get('/welcomepage.html', (req, res) => {
+  res.sendFile(__dirname + '/welcomepage.html');
+});
+
 
 
 // pool.query(`select * from users`, function(err, result, fields) {
@@ -121,7 +127,43 @@ app.post('/delete-rows', (req, res) => {
 });
 
 
+// LOGIN 
 
+// Route for handling login form submission
+app.post('/login', (req, res) => {
+  const { email, password } = req.body;
+
+  // Check if email and password are provided
+  if (!email || !password) {
+    return res.status(400).send('Email and password are required');
+  }
+
+  // Query the database to check if the user exists
+  pool.query(
+    'SELECT * FROM users WHERE email = ? AND password = ?',
+    [email, password],
+    (error, results) => {
+      if (error) {
+        console.error('Error executing MySQL query:', error);
+        return res.status(500).send('Internal Server Error');
+      }
+
+      // Check if user exists
+      if (results.length === 0) {
+        return res.status(401).send('Invalid email or password');
+      }
+
+      // User is authenticated, redirect to welcome page with username
+      const username = results[0].firstname; // Assuming firstname is the column name for username
+      res.redirect(`/welcomepage.html?username=${encodeURIComponent(username)}`);
+    }
+  );
+});
+
+app.get('/welcomepage.html', (req, res) => {
+  const { username } = req.query;
+  res.sendFile(__dirname + '/welcomepage.html');
+});
 
 
 
