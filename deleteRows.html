@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delete Rows</title>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    #dataBody {
+      text-align: center;
+    }
+
+    .deleteButton {
+      cursor: pointer;
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>Data Display with Delete</h2>
+  <button onclick="deleteSelectedRows()">Delete Selected Rows</button>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Select</th>
+        <th>ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>Phone Number</th>
+        <th>Password</th>
+      </tr>
+    </thead>
+    <tbody id="dataBody"></tbody>
+  </table>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const response = await fetch('/fetch-data');
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const dataBody = document.getElementById('dataBody');
+        dataBody.innerHTML = '';
+
+        data.forEach((row) => {
+          const newRow = document.createElement('tr');
+          newRow.innerHTML = `
+            <td><input type="checkbox" class="rowCheckbox" value="${row.id}"></td>
+            <td>${row.id}</td>
+            <td>${row.firstname}</td>
+            <td>${row.lastname}</td>
+            <td>${row.email}</td>
+            <td>${row.phone_number}</td>
+            <td>${row.password}</td>
+          `;
+          dataBody.appendChild(newRow);
+        });
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    });
+
+    // function deleteSelectedRows() {
+    //   const checkboxes = document.querySelectorAll('.rowCheckbox:checked');
+    //   const idsToDelete = Array.from(checkboxes).map(checkbox => checkbox.value);
+
+    //   if (idsToDelete.length === 0) {
+    //     alert('Please select rows to delete.');
+    //     return;
+    //   }
+
+    //   const confirmation = confirm('Are you sure you want to delete the selected rows?');
+    //   if (confirmation) {
+    //     fetch('/delete-rows', {
+    //       method: 'POST',
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //       },
+    //       body: JSON.stringify({ ids: idsToDelete }),
+    //     })
+    //     .then(response => {
+    //       if (!response.ok) {
+    //         throw new Error(`HTTP error! Status: ${response.status}`);
+    //       }
+    //       return response.json();
+    //     })
+    //     .then(data => {
+    //       // Handle success if needed
+    //       console.log('Rows deleted:', data);
+    //       // Refresh the table after deletion (you might want to optimize this)
+    //       location.reload();
+    //     })
+    //     .catch(error => {
+    //       console.error('Error deleting rows:', error);
+    //     });
+    //   }
+    // }
+
+  function deleteSelectedRows() {
+    const checkboxes = document.querySelectorAll('.rowCheckbox:checked');
+    const idsToDelete = Array.from(checkboxes).map(checkbox => checkbox.value);
+
+    console.log('Selected IDs:', idsToDelete);
+
+    if (idsToDelete.length === 0) {
+      alert('Please select rows to delete.');
+      return;
+    }
+
+    const confirmation = confirm('Are you sure you want to delete the selected rows?');
+    if (confirmation) {
+      fetch('/delete-rows', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ids: idsToDelete }), // Correct this line
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Handle success if needed
+        console.log('Rows deleted:', data);
+        // Refresh the table after deletion (you might want to optimize this)
+        location.reload();
+      })
+      .catch(error => {
+        console.error('Error deleting rows:', error);
+      });
+    }
+  }
+
+
+
+  </script>
+</body>
+</html>

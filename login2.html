@@ -1,0 +1,68 @@
+<!-- login2.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration Form</title>
+</head>
+<body>
+    <h1>User Registration Form</h1>
+    <form action="/submit-form" method="post">
+        <label for="firstname">First Name:</label>
+        <input type="text" id="firstname" name="firstname" required>
+
+        <label for="lastname">Last Name:</label>
+        <input type="text" id="lastname" name="lastname" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="phone_number">Phone Number:</label>
+        <input type="text" id="phone_number" name="phone_number" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+
+<!-- login2.html -->
+
+<!-- Your existing form elements -->
+<!-- 
+<script>
+    document.getElementById('yourSubmitButtonId').addEventListener('click', async (event) => {
+      event.preventDefault(); // Prevent the form from submitting the traditional way
+  
+      // Your form data retrieval logic (e.g., using document.getElementById, etc.)
+      const formData = {
+        // Extract form data
+      };
+  
+      try {
+        // Make an asynchronous request to your Node.js server
+        const response = await fetch('/submit-form', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+  
+        if (response.ok) {
+          // Redirect to displayData.html upon successful submission
+          window.location.href = '/displayData.html';
+        } else {
+          console.error('Error submitting form:', response.statusText);
+          // Handle error if needed
+        }
+      } catch (error) {
+        console.error('Error submitting form:', error.message);
+        // Handle error if needed
+      }
+    });
+  </script> -->
+  
+</html>
