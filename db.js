@@ -2,14 +2,14 @@ const mysql = require('mysql2');
 const fs = require('fs');
 
 const pool = mysql.createPool({
-  connectionLimit: 20000, // Adjust as needed
-  host: 'mysql-3cf24693-surajmeshram7509-381c.a.aivencloud.com',
+  connectionLimit: 30000, // Adjust as needed
+  host: 'mysql-311cd616-alliance-agenda-2024.a.aivencloud.com',
   user: 'avnadmin',
-  password: 'AVNS_KStmeX_-Gn1wX6cSMbM',
-  database: 'ashishproject',
-  port: 18484,
+  password: 'AVNS_VL5zdzgbMxp2CTae0nv',
+  database: 'AllianceAgenda',
+  port: 13776,
   ssl: {
-    ca: fs.readFileSync('C:\\Users\\Suraj Meshram\\Desktop\\AllianceAgenda_COPY\\ca.pem'),           // Path to CA Certificate
+    ca: fs.readFileSync('C:\\AllianceAgenda\\caAsh.pem'),           // Path to CA Certificate
 
   },
 
@@ -21,7 +21,7 @@ pool.getConnection((error, connection) => {
     throw error;
   }
 
-  console.log('Hello Suraj, Database is connected Successfully');
+  console.log('Hello Ashish, Database is connected Successfully');
 
   // Release the connection back to the pool when done with it
   connection.release();

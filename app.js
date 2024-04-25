@@ -7,19 +7,21 @@ const app = express();
 const port = 3000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static('public'));
 
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public')));
 
 // // Define a route handler for the root path
 // app.get('/login-page', (req, res) => {
 //   // Use 'path' module to get the absolute path to the HTML file
 //   const indexPath = path.join(__dirname, 'login.html');
-  
+
 //   // Serve the HTML file
 //   res.sendFile(indexPath);
 // });
 
-
+// Configure Express to serve static files
+// app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.post('/submit-form', (req, res) => {
@@ -49,31 +51,36 @@ app.post('/submit-form', (req, res) => {
 
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
+  res.sendFile(__dirname + '/pages/index.html');
 });
 
 app.get('/login.html', (req, res) => {
-  res.sendFile(__dirname + '/login.html');
+  res.sendFile(__dirname + '/pages/login.html');
 });
 
 app.get('/displayData.html', (req, res) => {
-  res.sendFile(__dirname + '/displayData.html');
+  res.sendFile(__dirname + '/pages/displayData.html');
 });
 
 
 
 app.get('/dashboard.html', (req, res) => {
-  res.sendFile(__dirname + '/dashboard.html');
+  res.sendFile(__dirname + '/pages/dashboard.html');
 });
 
 
 app.get('/deleteRows.html', (req, res) => {
-  res.sendFile(__dirname + '/deleteRows.html');
+  res.sendFile(__dirname + '/pages/deleteRows.html');
 });
 
 app.get('/welcomepage.html', (req, res) => {
-  res.sendFile(__dirname + '/welcomepage.html');
+  res.sendFile(__dirname + '/pages/welcomepage.html');
 });
+
+app.get('/gallery/index.html', (req, res) => {
+  res.sendFile(__dirname + '/pages/gallery.html');
+});
+
 
 
 
@@ -87,7 +94,7 @@ app.get('/welcomepage.html', (req, res) => {
 
 
 app.get('/fetch-data', (req, res) => {
-  const query = 'SELECT * FROM users'; 
+  const query = 'SELECT * FROM users';
 
   // Perform the database query
   pool.query(query, (err, results) => {
@@ -168,15 +175,158 @@ app.get('/welcomepage.html', (req, res) => {
 
 
 
+
+
+// file upload >>>>>>>>>>>>>>>>>>.
+
+// const multer = require('multer');
+
+
+// Storage configuration for Multer
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, 'uploads/'); // Directory to store uploaded files
+//   },
+//   filename: (req, file, cb) => {
+//     const uniqueName = `${Date.now()}-${file.originalname}`; // Unique name for the file
+//     cb(null, uniqueName);
+//   },
+// });
+
+// const upload = multer({ storage }); // Use storage configuration for Multer
+
+// app.use(express.static('public')); // Serve static files
+
+// // Route for handling image uploads
+// app.post('/upload', upload.single('photo'), (req, res) => {
+//   if (req.file) {
+//     console.log(`File uploaded: ${req.file.filename}`);
+//     res.send('File uploaded successfully');
+//   } else {
+//     res.status(400).send('No file uploaded');
+//   }
+// });
+
+
+
+
+
+
+// -------------------------------------------------------------------------------
+
+
+// const storage = multer.memoryStorage(); // Store files in memory
+// const upload = multer({ storage });
+
+// const express = require('express');
+// const pool = require('./db'); // Your MySQL connection pool
+
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() }); // Use in-memory storage
+
+
+app.post('/upload', upload.single('photo'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).send('No file uploaded');
+  }
+
+  const fileData = req.file.buffer; // Get the binary data from the file
+  const fileName = req.file.originalname; // Get the file name
+
+  // Insert into MySQL
+  pool.query(
+    'INSERT INTO photos (name, data, mime_type) VALUES (?, ?, ?)',
+    [fileName, fileData, req.file.mimetype], // Pass parameters in an array
+    (error, results) => {
+      if (error) {
+        console.error('Error saving file to database:', error);
+        return res.status(500).send('Error uploading file');
+      }
+
+      console.log(`File ${fileName} uploaded and saved to database`);
+      // res.send('File uploaded and stored in database');
+      res.status(201).json({ message: 'File uploaded successfully' });
+    }
+  );
+});
+// -----------------------------------------------------------------------------------------------------------
+// Endpoint to retrieve a photo by ID
+app.get('/photo/:id', (req, res) => {
+  const photoId = parseInt(req.params.id); // Get the photo ID from the route and convert it to an integer
+
+  // Query the database to find the photo with the specified ID
+  pool.query(
+    'SELECT data, mime_type FROM photos WHERE id = ?',
+    [photoId], // Query parameter
+    (error, results) => {
+      if (error) {
+        console.error('Error retrieving photo from database:', error);
+        return res.status(500).send('Internal server error');
+      }
+
+      if (results.length === 0) {
+        return res.status(404).send('Photo not found'); // No photo with the specified ID
+      }
+
+      const photo = results[0]; // Get the first result (only one expected)
+      res.setHeader('Content-Type', photo.mime_type); // Set the content type based on the stored MIME type
+      res.send(photo.data); // Send the binary data as the response
+    }
+  );
+});
+// ------------------------------------------------------------------------------------------------------------------------
+// Endpoint to retrieve all photos
+app.get('/photos', (req, res) => {
+  // Query the database to get all photos
+  pool.query(
+    'SELECT id, name, data, mime_type FROM photos',
+    (error, results) => {
+      if (error) {
+        console.error('Error retrieving photos from database:', error);
+        return res.status(500).send('Internal server error');
+      }
+
+      if (results.length === 0) {
+        return res.status(404).send('No photos found');
+      }
+
+      // Create an array to store the photo data
+      const photos = results.map((row) => ({
+        id: row.id,
+        name: row.name,
+        mime_type: row.mime_type,
+        data: row.data.toString('base64'), // Convert binary data to base64
+      }));
+
+      res.json(photos); // Send the array as a JSON response
+    }
+  );
+});
+// ------------------------------------------------------------------------------------
+// delete photo from gallery
+// DELETE endpoint to delete a photo by ID in MySQL
+app.delete('/photos/:id', (req, res) => {
+  const photoId = parseInt(req.params.id, 10); // Convert ID to integer
+
+  // SQL query to delete a photo by ID
+  const query = 'DELETE FROM photos WHERE id = ?'; // Use '?' for parameterized queries
+  const values = [photoId]; // Array of values for parameterized query
+
+  // Execute the query
+  pool.query(query, values, (error, result) => {
+    if (error) {
+      console.error('Error deleting photo:', error);
+      return res.status(500).send('Internal server error'); // Error handling
+    }
+
+    if (result.affectedRows === 0) { // Check if any rows were deleted
+      return res.status(404).send('Photo not found'); // If no rows were deleted
+    }
+
+    res.status(200).json({ message: 'Photo deleted successfully', id: photoId }); // Successful deletion
+  });
+});
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
-
-
-
-
-
-
-
-
-
