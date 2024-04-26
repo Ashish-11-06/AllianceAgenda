@@ -70,6 +70,22 @@
         .message.error {
             color: red;
         }
+        
+        .message {
+            text-align: center;
+            margin: 10px 0;
+            opacity: 0; /* Initially hidden */
+            transition: opacity 0.5s ease-in-out; /* Smooth transition for fade in/out */
+        }
+
+        .message.success {
+            color: green;
+        }
+
+        .message.show {
+            color: green;
+            opacity: 1; /* Make visible when 'show' class is added */
+        }
     </style>
 </head>
 
@@ -149,9 +165,9 @@
                     
                     if (xhr.status >= 200 && xhr.status < 300) {
                          progressBarContainer.style.display = 'none'; // Hide progress bar when complete
-            messageContainer.textContent = 'File uploaded successfully!';
+                         showSuccessMessage();
 
-            messageContainer.className = 'message success';
+            // messageContainer.className = 'message success';
             loadPhotos(); // Reload gallery with newly added image
         } else {
             messageContainer.textContent = `Error: ${xhr.statusText} (${xhr.status}). Please try again.`;
@@ -231,6 +247,17 @@
                 console.error('Error deleting photo:', error);
             });
         }
+
+        function showSuccessMessage() {
+    const messageContainer = document.getElementById('message-container'); // Get message container
+    messageContainer.classList.add('show'); // Show the message by adding 'show' class
+    messageContainer.textContent = "File uploaded successfully!"; // Set the success message
+    setTimeout(() => {
+        messageContainer.classList.remove('show'); // Hide message after a few seconds
+    }, 3000); // Duration for displaying the message
+}
+
+
     </script>
 
     
