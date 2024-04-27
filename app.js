@@ -81,8 +81,13 @@ app.get('/gallery/index.html', (req, res) => {
   res.sendFile(__dirname + '/pages/gallery.html');
 });
 
+app.get('/task.html', (req, res) => {
+  res.sendFile(__dirname + '/pages/task.html');
+});
 
-
+app.get('/communication.html', (req, res) => {
+  res.sendFile(__dirname + '/communication.html');
+});
 
 // pool.query(`select * from users`, function(err, result, fields) {
 //   if (err) {
@@ -327,6 +332,62 @@ app.delete('/photos/:id', (req, res) => {
   });
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+// ===============================================================
+// const express = require('express');
+// const bodyParser = require('body-parser');
+const http = require('http');
+const socketIo = require('socket.io');
+
+
+const server = http.createServer(app);
+const io = socketIo(server);
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static('public'));
+
+// Change this line to serve files from the 'pages' directory
+app.use('/', express.static('pages'));
+
+io.on('connection', (socket) => {
+    console.log('User connected');
+    // Listen for the 'message' event
+  socket.on('chat message', (data) => {
+    const { username, message } = data;
+    // const timestamp = new Date().toISOString();
+    const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+    data.timestamp = timestamp;
+
+    console.log(`Received message from ${username}: ${message} at ${timestamp}`);
+
+    // Insert the message into the MySQL database
+    const query = 'INSERT INTO messages (username, message, timestamp) VALUES (?, ?, ?)';
+    console.log(`Query: ${query}`);
+    console.log(`Parameters: [${username}, ${message}, ${timestamp}]`);
+    
+    pool.query(query, [username, message, timestamp], (err, result) => {
+      if (err) throw err;
+      console.log(`Inserted message: ${message} from ${username} at ${timestamp}`);
+    });
+
+    // Broadcast the message to all connected clients
+   // Broadcast the message to all clients
+   io.emit('chat message', data);
+  });
+
+    socket.on('chat message', (msg) => {
+        io.emit('chat message', msg);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('User disconnected');
+    });
 });
+
+
+server.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
+// app.listen(port, () => {
+//   console.log(`Server is running on port ${port}`);
+// });
