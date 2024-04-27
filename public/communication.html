@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Live Messaging</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        #messages {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 20px;
+            overflow-y: auto;
+            height: 400px;
+        }
+
+        #message-form {
+            display: flex;
+        }
+
+        #message-input {
+            flex-grow: 1;
+            padding: 10px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="messages"></div>
+    <form id="message-form">
+        <input type="text" id="username" placeholder="Enter your username...">
+        <input type="text" id="message-input" placeholder="Type your message here...">
+        <button type="submit">Send</button>
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const messagesDiv = document.getElementById('messages');
+        const messageForm = document.getElementById('message-form');
+        const messageInput = document.getElementById('message-input');
+        const usernameInput = document.getElementById('username');
+
+        const socket = io('http://localhost:3000');
+
+        // Send a message
+        // Function to send a message
+function sendMessage() {
+  const username = document.getElementById('username').value.trim();
+  const message = document.getElementById('message-input').value.trim();
+
+  if (username && message) {
+    socket.emit('chat message', { username, message });
+  }
+}
+
+// Handle incoming messages
+socket.on('chat message', (data) => {
+  const messageElement = document.createElement('p');
+  messageElement.innerHTML = `<strong>${data.username} (${data.timestamp}):</strong> ${data.message}`;
+  document.getElementById('messages').appendChild(messageElement);
+});
+
+// Event listener for form submission
+document.getElementById('message-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  sendMessage();
+});
+        
+    </script>
+</body>
+</html>
