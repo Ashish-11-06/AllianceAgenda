@@ -7,6 +7,8 @@ const pool = mysql.createPool({
   user: 'avnadmin',
   password: 'AVNS_VL5zdzgbMxp2CTae0nv',
   database: 'AllianceAgenda',
+  // timezone: 'Asia/Kolkata',
+  // timezone: '+05:30',
   port: 13776,
   ssl: {
     ca: fs.readFileSync('C:\\AllianceAgenda\\caAsh.pem'),           // Path to CA Certificate
