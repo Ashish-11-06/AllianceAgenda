@@ -351,29 +351,30 @@ app.use('/', express.static('pages'));
 io.on('connection', (socket) => {
     console.log('User connected');
     // Listen for the 'message' event
-  socket.on('chat message', (data) => {
-    const { username, message } = data;
-    // const timestamp = new Date().toISOString();
-    const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
-
-    data.timestamp = timestamp;
-
-    console.log(`Received message from ${username}: ${message} at ${timestamp}`);
-
-    // Insert the message into the MySQL database
-    const query = 'INSERT INTO messages (username, message, timestamp) VALUES (?, ?, ?)';
-    console.log(`Query: ${query}`);
-    console.log(`Parameters: [${username}, ${message}, ${timestamp}]`);
+    const convertToIST = (date) => {
+      // Add 5 hours and 30 minutes to convert UTC to IST
+      const IST_OFFSET = 5 * 60 * 60 * 1000 + 30 * 60 * 1000;
+      const dateIST = new Date(date.getTime() + IST_OFFSET);
+      return dateIST.toISOString().slice(0, 19).replace('T', ' ');
+    };
     
-    pool.query(query, [username, message, timestamp], (err, result) => {
-      if (err) throw err;
-      console.log(`Inserted message: ${message} from ${username} at ${timestamp}`);
+    // In your socket event handling
+    socket.on('chat message', (data) => {
+      const { username, message } = data;
+      const currentTimestamp = new Date(); // UTC time
+      const timestampIST = convertToIST(currentTimestamp); // Convert to IST
+    
+      const query = 'INSERT INTO messages (username, message, timestamp) VALUES (?, ?, ?)';
+      pool.query(query, [username, message, timestampIST], (err, result) => {
+        if (err) throw err;
+        console.log(`Inserted message: ${message} from ${username} at ${timestampIST}`);
+      });
+    
+      // Emit with IST timestamp
+      data.timestamp = timestampIST;
+      io.emit('chat message', data);
     });
-
-    // Broadcast the message to all connected clients
-   // Broadcast the message to all clients
-   io.emit('chat message', data);
-  });
+    
 
     socket.on('chat message', (msg) => {
         io.emit('chat message', msg);
