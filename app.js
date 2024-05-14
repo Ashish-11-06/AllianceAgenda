@@ -176,59 +176,14 @@ app.get('/welcomepage.html', (req, res) => {
   const { username } = req.query;
   res.sendFile(__dirname + '/welcomepage.html');
 });
-
-
-
-
-
-
-// file upload >>>>>>>>>>>>>>>>>>.
-
-// const multer = require('multer');
-
-
-// Storage configuration for Multer
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, 'uploads/'); // Directory to store uploaded files
-//   },
-//   filename: (req, file, cb) => {
-//     const uniqueName = `${Date.now()}-${file.originalname}`; // Unique name for the file
-//     cb(null, uniqueName);
-//   },
-// });
-
-// const upload = multer({ storage }); // Use storage configuration for Multer
-
-// app.use(express.static('public')); // Serve static files
-
-// // Route for handling image uploads
-// app.post('/upload', upload.single('photo'), (req, res) => {
-//   if (req.file) {
-//     console.log(`File uploaded: ${req.file.filename}`);
-//     res.send('File uploaded successfully');
-//   } else {
-//     res.status(400).send('No file uploaded');
-//   }
-// });
-
-
-
-
-
-
 // -------------------------------------------------------------------------------
-
-
 // const storage = multer.memoryStorage(); // Store files in memory
 // const upload = multer({ storage });
-
 // const express = require('express');
 // const pool = require('./db'); // Your MySQL connection pool
 
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() }); // Use in-memory storage
-
 
 app.post('/upload', upload.single('photo'), (req, res) => {
   if (!req.file) {
@@ -358,7 +313,20 @@ io.on('connection', (socket) => {
       return dateIST.toISOString().slice(0, 19).replace('T', ' ');
     };
     
-    // In your socket event handling
+ // for fetching old messages from database
+app.get('/messages', (req, res) => {
+  const { username } = req.query;
+  const query = 'SELECT * FROM messages ORDER BY timestamp';
+  pool.query(query, (err, result) => {
+    if (err) {
+      console.error('Error fetching messages:', err);
+      res.status(500).json({ error: 'Error fetching messages' });
+      return;
+    }
+    res.json(result);
+  });
+});
+   
     socket.on('chat message', (data) => {
       const { username, message } = data;
       const currentTimestamp = new Date(); // UTC time
@@ -375,11 +343,6 @@ io.on('connection', (socket) => {
       io.emit('chat message', data);
     });
     
-
-    socket.on('chat message', (msg) => {
-        io.emit('chat message', msg);
-    });
-
     socket.on('disconnect', () => {
         console.log('User disconnected');
     });
