@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Messaging with Dynamic Div Height</title>
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
+    <title>AA communication</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,7 +14,8 @@
             align-items: center;
             margin: 0;
             padding: 0;
-            background-color: #f9f9f9; /* Light background color */
+            background-color: #f9f9f9;
+            /* Light background color */
         }
 
         #messages {
@@ -25,51 +24,68 @@
             overflow-y: auto;
             width: 100%;
             max-width: 800px;
-            height: 200px; /* Initial height */
-            transition: height 0.3s; /* Smooth height change */
+            height: 200px;
+            /* Initial height */
+            transition: height 0.3s;
+            /* Smooth height change */
         }
 
         #message-form {
             display: flex;
             width: 100%;
             max-width: 800px;
-            background-color: #f2f2f2; /* Light gray for form */
+            background-color: #f2f2f2;
+            /* Light gray for form */
             padding: 10px;
-            border: 1px solid #ccc; /* Border for the form */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
+            border: 1px solid #ccc;
+            /* Border for the form */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            /* Soft shadow */
         }
 
-        #message-input, #username {
+        #message-input,
+        #username {
             flex-grow: 1;
             padding: 10px;
             border: 1px solid #ccc;
-            border-radius: 5px; /* Rounded corners */
+            border-radius: 5px;
+            /* Rounded corners */
             margin-right: 10px;
         }
 
         #message-input {
-            font-size: 16px; /* Larger font */
+            font-size: 16px;
+            /* Larger font */
         }
 
         button {
-            padding: 10px 20px; /* Padding for button */
-            background-color: #007bff; /* Blue button */
-            color: white; /* White text */
+            padding: 10px 20px;
+            /* Padding for button */
+            background-color: #007bff;
+            /* Blue button */
+            color: white;
+            /* White text */
             border: none;
-            border-radius: 5px; /* Rounded corners */
-            cursor: pointer; /* Pointer cursor */
+            border-radius: 5px;
+            /* Rounded corners */
+            cursor: pointer;
+            /* Pointer cursor */
         }
 
         button:hover {
-            background-color: #0056b3; /* Darker on hover */
+            background-color: #0056b3;
+            /* Darker on hover */
         }
 
         p {
-            margin: 5px 0; /* Reduced margin for paragraphs */
-            font-size: 14px; /* Smaller font size for messages */
+            margin: 5px 0;
+            /* Reduced margin for paragraphs */
+            font-size: 14px;
+            /* Smaller font size for messages */
         }
     </style>
 </head>
+
 <body>
     <div id="messages"></div>
     <form id="message-form">
@@ -92,8 +108,8 @@
         const usernameInput = $("#username");
 
         const socket = io("http://localhost:3000");
-         // Scroll to the bottom of the messages div
-         const scrollToBottom = () => {
+        // Scroll to the bottom of the messages div
+        const scrollToBottom = () => {
             messagesDiv.scrollTop(messagesDiv[0].scrollHeight); // Set scroll position to the maximum height
         };
 
@@ -127,9 +143,9 @@
             messageElement.html(`<strong>${data.username} (${data.timestamp}):</strong> ${data.message}`);
             messagesDiv.append(messageElement);
 
-                // Scroll to the bottom when a new message is added
-                scrollToBottom(); // Ensures the latest message is visible
-      
+            // Scroll to the bottom when a new message is added
+            scrollToBottom(); // Ensures the latest message is visible
+
             // Adjust message div height when a new message is added
             adjustMessagesHeight();
         });
@@ -140,6 +156,28 @@
             sendMessage();
             messageInput.val(""); // Clear the message input
         });
+
+        // Function to fetch old messages from the server
+        function fetchOldMessages() {
+            $.get('/messages', function (data) {
+                data.forEach(function (message) {
+                    const messageElement = $("<p></p>");
+                    messageElement.html(`<strong>${message.username} (${message.timestamp}):</strong> ${message.message}`);
+                    messagesDiv.append(messageElement);
+                });
+
+                // After appending all old messages, adjust the height and scroll to bottom
+                adjustMessagesHeight();
+                scrollToBottom();
+            });
+        }
+
+        // Call the fetchOldMessages function when the page loads
+        $(document).ready(function () {
+            fetchOldMessages();
+        });
+
     </script>
 </body>
+
 </html>
