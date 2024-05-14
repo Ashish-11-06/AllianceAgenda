@@ -161,9 +161,12 @@
         function fetchOldMessages() {
             $.get('/messages', function (data) {
                 data.forEach(function (message) {
+                    // Format the timestamp to match the sent message format
+            const formattedTimestamp = new Date(message.timestamp).toLocaleString();
+
                     const messageElement = $("<p></p>");
-                    messageElement.html(`<strong>${message.username} (${message.timestamp}):</strong> ${message.message}`);
-                    messagesDiv.append(messageElement);
+                    messageElement.html(`<strong>${message.username} (${formattedTimestamp}):</strong> ${message.message}`);
+                 messagesDiv.append(messageElement);
                 });
 
                 // After appending all old messages, adjust the height and scroll to bottom
