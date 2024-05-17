@@ -9,36 +9,29 @@ const port = 3000;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-// app.use(express.static(path.join(__dirname, 'public')));
+app.set('view engine', 'ejs');
 
-// // Define a route handler for the root path
-// app.get('/login-page', (req, res) => {
-//   // Use 'path' module to get the absolute path to the HTML file
-//   const indexPath = path.join(__dirname, 'login.html');
+const bcrypt = require('bcrypt');
 
-//   // Serve the HTML file
-//   res.sendFile(indexPath);
-// });
-
-// Configure Express to serve static files
-// app.use(express.static(path.join(__dirname, 'public')));
-
-
-app.post('/submit-form', (req, res) => {
+app.post('/submit-form', async (req, res) => {
   const { firstname, lastname, email, phone_number, password } = req.body;
+  const hashedPassword = await bcrypt.hash(password, 10);
 
   pool.query(
     'INSERT INTO users (firstname, lastname, email, phone_number, password) VALUES (?, ?, ?, ?, ?)',
-    [firstname, lastname, email, phone_number, password],
+    [firstname, lastname, email, phone_number, hashedPassword],
     (error, results) => {
       if (error) {
+        if (error.code === 'ER_DUP_ENTRY') {
+          return res.redirect('/login?error=Email%20already%20exists');
+     
+          // return res.status(400).send('Email already exists');
+        }
         console.error('Error inserting data:', error);
-        res.status(500).send('Error inserting data');
-      } else {
-        console.log('Data inserted successfully');
-        // Do not send a response here; let the redirect handle the response
-        res.redirect('/dashboard.html');
+        return res.status(500).send('Error inserting data');
       }
+      console.log('Data inserted successfully');
+      res.render('login', { success: 'User created successfully' });
     }
   );
 });
@@ -49,46 +42,49 @@ app.post('/submit-form', (req, res) => {
 
 
 
-
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/pages/index.html');
+  res.render('index');
 });
 
-app.get('/login.html', (req, res) => {
-  res.sendFile(__dirname + '/pages/login.html');
+app.get('/login', (req, res) => {
+  const error = req.query.error;
+  const success = req.query.success;
+  res.render('login', { error, success });
 });
 
-app.get('/displayData.html', (req, res) => {
-  res.sendFile(__dirname + '/pages/displayData.html');
+app.get('/displayData', (req, res) => {
+  res.render('displayData');
+});
+
+app.get('/dashboard', (req, res) => {
+  res.render('dashboard');
 });
 
 
-
-app.get('/dashboard.html', (req, res) => {
-  res.sendFile(__dirname + '/pages/dashboard.html');
+app.get('/deleteRows', (req, res) => {
+  res.render('deleteRows');
 });
 
-
-app.get('/deleteRows.html', (req, res) => {
-  res.sendFile(__dirname + '/pages/deleteRows.html');
+app.get('/welcomepage', (req, res) => {
+  res.render('welcomepage');
 });
 
-app.get('/welcomepage.html', (req, res) => {
-  res.sendFile(__dirname + '/pages/welcomepage.html');
+app.get('/gallery', (req, res) => {
+  res.render('gallery');
 });
 
-app.get('/gallery/index.html', (req, res) => {
-  res.sendFile(__dirname + '/pages/gallery.html');
+app.get('/task', (req, res) => {
+  res.render('task');
 });
 
-app.get('/task.html', (req, res) => {
-  res.sendFile(__dirname + '/pages/task.html');
+app.get('/communication', (req, res) => {
+  res.render('communication');
 });
 
-app.get('/communication.html', (req, res) => {
-  res.sendFile(__dirname + '/communication.html');
-});
-
+// app.get('/welcomepage.html', (req, res) => {
+//   const { username } = req.query;
+//   res.sendFile(__dirname + '/welcomepage.html');
+// });
 // pool.query(`select * from users`, function(err, result, fields) {
 //   if (err) {
 //       return console.log(err);
@@ -145,37 +141,27 @@ app.post('/delete-rows', (req, res) => {
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
 
-  // Check if email and password are provided
-  if (!email || !password) {
-    return res.status(400).send('Email and password are required');
-  }
-
-  // Query the database to check if the user exists
   pool.query(
-    'SELECT * FROM users WHERE email = ? AND password = ?',
-    [email, password],
-    (error, results) => {
+    'SELECT * FROM users WHERE email = ?',
+    [email],
+    async (error, results) => {
       if (error) {
         console.error('Error executing MySQL query:', error);
         return res.status(500).send('Internal Server Error');
       }
 
-      // Check if user exists
-      if (results.length === 0) {
+      if (results.length === 0 || !(await bcrypt.compare(password, results[0].password))) {
         return res.status(401).send('Invalid email or password');
       }
 
-      // User is authenticated, redirect to welcome page with username
-      const username = results[0].firstname; // Assuming firstname is the column name for username
-      res.redirect(`/welcomepage.html?username=${encodeURIComponent(username)}`);
+      const username = results[0].firstname;
+      res.redirect(`/welcomepage?username=${encodeURIComponent(username)}`);
     }
   );
 });
 
-app.get('/welcomepage.html', (req, res) => {
-  const { username } = req.query;
-  res.sendFile(__dirname + '/welcomepage.html');
-});
+
+
 // -------------------------------------------------------------------------------
 // const storage = multer.memoryStorage(); // Store files in memory
 // const upload = multer({ storage });
