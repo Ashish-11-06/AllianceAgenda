@@ -1,16 +1,26 @@
 
+#background-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('logg.png') no-repeat center center;
+    background-size: cover;
+    filter: blur(1px);
+    /* z-index: -1; */
+}
 
 div#form {
 	color: #fff;
 	background-attachment: scroll;
-	background:  url('signin.jpg') !important;
 	background-position: center center;
 	background-repeat: none;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	background-size: cover;
 	-o-background-size: cover;
-  min-height:100%;
+  /* min-height:100%; */
 
 }
 
@@ -18,7 +28,7 @@ div#form {
 		body,
 		html {
 			height: 100%;
-
+			
 			overflow-x: hidden;
 			font-family: 'Dosis', sans-serif;
 		}
@@ -98,21 +108,7 @@ div#form {
 			color: #AEA8D3;
 			background-color: #fff;
 		}
-
-		div#form {
-			color: #fff;
-			background-attachment: scroll;
-			background: url('signin.jpg');
-			background-position: center center;
-			background-repeat: none;
-			-webkit-background-size: cover;
-			-moz-background-size: cover;
-			background-size: cover;
-			-o-background-size: cover;
-			min-height: 100%;
-
-		}
-
+		
 		#userform p {
 			font-size: 14px;
 			margin-bottom: 5px;
@@ -335,7 +331,7 @@ div#form {
 
 		#userform #login .form-group label.active .req {
 			opacity: 0;
-		}
+		}	
 
 		.mrgn-30-top {
 			margin-top: 30px
@@ -345,4 +341,6 @@ div#form {
 			border-radius: 10px 20px;
 		}
 	
-	
+	#email-error{
+		color: red;
+	}

@@ -504,7 +504,7 @@ h6,
 .text-light .h4,
 .text-light .h5,
 .text-light .h6 {
-    color: !important
+    color: #fff !important;
 }
 
 .text-sm {
