@@ -3,11 +3,19 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const pool = require('./db');
 
+
+
 const app = express();
 const port = 3000;
 
+app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Internal Server Error' });
+});
+
 
 app.set('view engine', 'ejs');
 
@@ -36,8 +44,7 @@ app.post('/submit-form', async (req, res) => {
   );
 });
 
-
-
+//  ------------------------------------------------------------------------------------------
 
 
 
@@ -74,24 +81,101 @@ app.get('/gallery', (req, res) => {
 });
 
 app.get('/task', (req, res) => {
-  res.render('task');
+  res.render('tasks');
 });
 
 app.get('/communication', (req, res) => {
   res.render('communication');
 });
 
-// app.get('/welcomepage.html', (req, res) => {
-//   const { username } = req.query;
-//   res.sendFile(__dirname + '/welcomepage.html');
-// });
-// pool.query(`select * from users`, function(err, result, fields) {
-//   if (err) {
-//       return console.log(err);
-//   }
-//   return console.log(result);
-// })
 
+// -----------------------------------------------------------------------------
+let tasks = [];
+
+// Endpoint to fetch tasks
+app.get('/fetch-task', (req, res) => {
+  const selectQuery = 'SELECT * FROM tasks';
+  pool.query(selectQuery, (err, results) => {
+      if (err) {
+          console.error('Error fetching tasks:', err.message);
+          res.status(500).json({ error: 'Failed to fetch tasks' }); // Ensure JSON error response
+      } else {
+              res.json(results);
+          
+      }
+  });
+});
+
+
+ 
+app.post('/task', (req, res) => {
+  const { title, description, dueDate, priority, assigned_to, assigned_by } = req.body;
+  if (!title || !dueDate || !priority) {
+      return res.status(400).send('Title, dueDate, and priority are required');
+  }
+
+  const insertQuery = `INSERT INTO tasks (title, description, dueDate, priority, assigned_to, assigned_by) VALUES (?, ?, ?, ?, ?, ?)`;
+  pool.query(insertQuery, [title, description, dueDate, priority, assigned_to, assigned_by], (err, result) => {
+      if (err) {
+          console.error('Error adding task:', err.message);
+          res.status(500).send('Failed to add task');
+      } else {
+          res.status(201).send({ id: result.insertId, ...req.body });
+      }
+  });
+});
+
+
+// PUT route to update task status
+app.put('/task/:id', (req, res) => {
+  const taskId = req.params.id;
+  const { status } = req.body;
+
+  // Update status in MySQL database
+  const updateQuery = `UPDATE tasks SET status = ? WHERE id = ?`;
+  pool.query(updateQuery, [status, taskId], (err, result) => {
+      if (err) {
+          console.error('Error updating task status:', err.message);
+          return res.status(500).send('Failed to update task status');
+      }
+
+      // Check if a row was affected
+      if (result.affectedRows === 0) {
+          return res.status(404).send('Task not found');
+      }
+
+      // Fetch the updated task from the database
+      const selectQuery = `SELECT *, DATE_FORMAT(dueDate, '%Y-%m-%d %r') AS formattedDueDate FROM tasks WHERE id = ?`
+      pool.query(selectQuery, [taskId], (err, rows) => {
+          if (err) {
+              console.error('Error fetching updated task:', err.message);
+              return res.status(500).send('Failed to fetch updated task');
+          }
+
+          // Send the updated task as JSON response
+          const updatedTask = rows[0];
+          res.json(updatedTask);
+      });
+  });
+});
+
+
+app.delete('/task/:id', (req, res) => {
+  const { id } = req.params;
+  const deleteQuery = `DELETE FROM tasks WHERE id = ?`;
+
+  pool.query(deleteQuery, [id], (err, result) => {
+    if (err) {
+      console.error('Error deleting task:', err.message);
+      res.status(500).json({ error: 'Failed to delete task' });
+    } else {
+      res.status(204).end();
+    }
+  });
+});
+
+
+// ----------------------------------------------------------------------------
 
 
 app.get('/fetch-data', (req, res) => {
@@ -163,10 +247,6 @@ app.post('/login', (req, res) => {
 
 
 // -------------------------------------------------------------------------------
-// const storage = multer.memoryStorage(); // Store files in memory
-// const upload = multer({ storage });
-// const express = require('express');
-// const pool = require('./db'); // Your MySQL connection pool
 
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() }); // Use in-memory storage
@@ -278,7 +358,6 @@ app.delete('/photos/:id', (req, res) => {
 // const bodyParser = require('body-parser');
 const http = require('http');
 const socketIo = require('socket.io');
-
 
 const server = http.createServer(app);
 const io = socketIo(server);
