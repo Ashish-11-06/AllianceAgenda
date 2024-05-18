@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Module</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Task Module</h1>
+    <form id="taskForm">
+      <input type="text" id="title" placeholder="Task Title" required>
+      <input type="text" id="description" placeholder="Task Description" required>
+      <input type="date" id="dueDate" required>
+      <select id="priority" required>
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+      </select>
+      <input type="text" id="assigned_to" placeholder="Assigned To" required>
+      <input type="text" id="assigned_by" placeholder="Assigned By" required>
+      <button type="submit">Add Task</button>
+    </form>
+    <ul id="taskList"></ul>
+  </div>
+  <script src="/taskScript.js"></script>
+</body>
+</html>
