@@ -3,112 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AllianceAgenda</title>
-    <!-- Bootstrap CDN -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="styles.css">
-
+    <title>Task List</title>
 </head>
 <body>
+    <form id="taskForm">
+        <input type="text" id="title" placeholder="Title" required>
+        <input type="text" id="description" placeholder="Description">
+        <input type="date" id="dueDate" required>
+        <input type="text" id="priority" placeholder="Priority" required>
+        <input type="text" id="assigned_to" placeholder="Assigned To">
+        <input type="text" id="assigned_by" placeholder="Assigned By">
+        <button type="submit">Add Task</button>
+    </form>
+    <ul id="taskList"></ul>
 
-    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const taskForm = document.getElementById('taskForm');
+            const taskList = document.getElementById('taskList');
 
-    <!-- navbar section -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-        
-        <div class="container">
-            <a class="navbar-brand" href="#">AllianceAgenda</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Services</a>
-                    </li>
-                    <!-- <li class="nav-item">
-                        <a class="nav-link" href="#">Show Dashboard</a>
-                    </li> -->
-                </ul>
-            </div>
-            <button class="dashboard" onclick="window.location.href='dashboard'">Show Dashboad</button>
+            // Fetch and display all tasks
+            fetchTasks();
 
-        
-        </div>
-    </nav>
-    <!-- navbar section ends -->
+            taskForm.addEventListener('submit', (e) => {
+                e.preventDefault();
 
-    <!-- jumbotron section -->
-    <div class="jumbotron">
-        <div class="container">
-            <h1 class="display-4">Welcome to AllianceAgenda</h1>
-            <p class="lead">The ultimate tools for ASM Institute</p>
-            <a href="\login" class="btn btn-lg">Get Started..</a>
-        </div>
-    </div>
-    <!-- jumbotron section ends -->
+                const title = document.getElementById('title').value;
+                const description = document.getElementById('description').value;
+                const dueDate = document.getElementById('dueDate').value;
+                const priority = document.getElementById('priority').value;
+                const assigned_to = document.getElementById('assigned_to').value;
+                const assigned_by = document.getElementById('assigned_by').value;
 
-    <!-- features section -->
-    <div class="features">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-4 col-md-6 col-sm-12">
-                    <div class="card">
-                        <img src="/index1.png" alt="Example Image">
-                        <div class="card-body">
-                            <h4 class="card-title">Plan your Tasks</h4>
-                            <p class="card-text">Create tasks, assign them to team members, set deadlines, and track progress.</p>
-                        </div>
+                const task = { title, description, dueDate, priority, assigned_to, assigned_by };
+
+                fetch('/task', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(task),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Task added:', data);
+                    addTaskToList(data);
+                    taskForm.reset();
+                })
+                .catch(error => {
+                    console.error('Error adding task:', error.message);
+                    alert('Error adding task: ' + error.message);
+                });
+            });
+
+            function fetchTasks() {
+                fetch('/task', { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                    .then(response => response.json())
+                    .then(tasks => {
+                        taskList.innerHTML = ''; // Clear existing tasks
+                        tasks.forEach(task => addTaskToList(task));
+                    })
+                    .catch(error => {
+                        console.error('Error fetching tasks:', error.message);
+                        alert('Error fetching tasks: ' + error.message);
+                    });
+            }
+
+            function addTaskToList(task) {
+                const li = document.createElement('li');
+                li.dataset.id = task.id;
+                li.innerHTML = `
+                    <span><strong>${task.title}</strong> - ${task.description} (Due: ${new Date(task.dueDate).toLocaleDateString()}, Priority: ${task.priority}, Assigned to: ${task.assigned_to}, Assigned by: ${task.assigned_by}) - Status: ${task.status || 'Pending'}</span>
+                    <div>
+                        <button class="complete">Complete</button>
+                        <button class="edit">Edit</button>
+                        <button class="delete">Delete</button>
                     </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-12">
-                    <div class="card">
-                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80" alt="collaboration" class="card-img-top">
-                        <div class="card-body">
-                            <h4 class="card-title">Collaboration in your organization</h4>
-                            <p class="card-text">Communicate with your team members, share files.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-12">
-                    <div class="card">
-                        <img src="https://images.unsplash.com/photo-1526948128573-703ee1aeb6fa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80" alt="reporting" class="card-img-top">
-                        <div class="card-body">
-                            <h4 class="card-title">Tasks</h4>
-                            <p class="card-text">Generate tasks</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- features section ends -->
+                `;
 
-    <!-- footer section -->
-    <div class="footer">
-        <div class="container">
-            <div class="social-icons">
-                <a href="#" class="fab fa-facebook-f"></a>
-                <a href="#" class="fab fa-twitter"></a>
-                <a href="#" class="fab fa-instagram"></a>
-                <a href="#" class="fab fa-linkedin-in"></a>
-            </div>
-            <p>© 2024 AllianceAgenda. All rights reserved.</p>
-        </div>
-    </div>
+                li.querySelector('.complete').addEventListener('click', () => {
+                    updateTaskStatus(task.id, 'Completed');
+                });
 
+                li.querySelector('.edit').addEventListener('click', () => {
+                    editTask(task);
+                });
 
-    <!-- footer section ends -->
+                li.querySelector('.delete').addEventListener('click', () => {
+                    deleteTask(task.id, li);
+                });
 
-    <!-- Bootstrap CDN -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+                taskList.appendChild(li);
+            }
+
+            function updateTaskStatus(id, status) {
+                fetch(`/task/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ status }),
+                })
+                .then(response => response.json())
+                .then(updatedTask => {
+                    const taskItem = taskList.querySelector(`[data-id='${updatedTask.id}']`);
+                    if (taskItem) {
+                        taskItem.querySelector('span').textContent = `${updatedTask.title} - ${updatedTask.description} (Due: ${new Date(updatedTask.dueDate).toLocaleDateString()}, Priority: ${updatedTask.priority}, Assigned to: ${updatedTask.assigned_to}, Assigned by: ${updatedTask.assigned_by}) - Status: ${updatedTask.status}`;
+                    } else {
+                        console.error(`Task with id ${updatedTask.id} not found in the list.`);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating task status:', error.message);
+                    alert('Error updating task status: ' + error.message);
+                });
+            }
+
+            function editTask(task) {
+                const newTitle = prompt('Edit Task Title', task.title);
+                const newDescription = prompt('Edit Task Description', task.description);
+                const newDueDate = prompt('Edit Due Date', new Date(task.dueDate).toISOString().substring(0, 10));
+                const newPriority = prompt('Edit Priority', task.priority);
+                const newAssignedTo = prompt('Edit Assigned To', task.assigned_to);
+                const newAssignedBy = prompt('Edit Assigned By', task.assigned_by);
+
+                fetch(`/task/${task.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        title: newTitle,
+                        description: newDescription,
+                        dueDate: newDueDate,
+                        priority: newPriority,
+                        assigned_to: newAssignedTo,
+                        assigned_by: newAssignedBy,
+                    }),
+                })
+                .then(response => response.json())
+                .then(updatedTask => {
+                    const taskItem = taskList.querySelector(`[data-id='${updatedTask.id}']`);
+                    taskItem.querySelector('span').textContent = `${updatedTask.title} - ${updatedTask.description} (Due: ${new Date(updatedTask.dueDate).toLocaleDateString()}, Priority: ${updatedTask.priority}, Assigned to: ${updatedTask.assigned_to}, Assigned by: ${updatedTask.assigned_by}) - Status: ${updatedTask.status}`;
+                })
+                .catch(error => {
+                    console.error('Error editing task:', error.message);
+                    alert('Error editing task: ' + error.message);
+                });
+            }
+
+            function deleteTask(id, taskElement) {
+                fetch(`/task/${id}`, {
+                    method: 'DELETE',
+                })
+                .then(() => {
+                    taskElement.remove();
+                })
+                .catch(error => {
+                    console.error('Error deleting task:', error.message);
+                    alert('Error deleting task: ' + error.message);
+                });
+            }
+        });
+    </script>
 </body>
 </html>
