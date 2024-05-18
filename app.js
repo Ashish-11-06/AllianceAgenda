@@ -94,14 +94,13 @@ let tasks = [];
 
 // Endpoint to fetch tasks
 app.get('/fetch-task', (req, res) => {
-  const selectQuery = 'SELECT * FROM tasks';
+  const selectQuery = `SELECT *, DATE_FORMAT(dueDate, '%Y-%m-%d') AS formattedDueDate FROM tasks`;
   pool.query(selectQuery, (err, results) => {
       if (err) {
           console.error('Error fetching tasks:', err.message);
           res.status(500).json({ error: 'Failed to fetch tasks' }); // Ensure JSON error response
       } else {
               res.json(results);
-          
       }
   });
 });
@@ -145,7 +144,7 @@ app.put('/task/:id', (req, res) => {
       }
 
       // Fetch the updated task from the database
-      const selectQuery = `SELECT *, DATE_FORMAT(dueDate, '%Y-%m-%d %r') AS formattedDueDate FROM tasks WHERE id = ?`
+      const selectQuery = `SELECT *, DATE_FORMAT(dueDate, '%Y-%m-%d') AS formattedDueDate FROM tasks WHERE id = ?`
       pool.query(selectQuery, [taskId], (err, rows) => {
           if (err) {
               console.error('Error fetching updated task:', err.message);

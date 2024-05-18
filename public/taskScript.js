@@ -70,7 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
         li.appendChild(span);
 
         const buttonsDiv = document.createElement('div');
-        ['complete', 'edit', 'delete'].forEach(action => {
+        ['complete', 'delete'].forEach(action => {
+        // ['complete', 'edit', 'delete'].forEach(action => { //if wants to add edit option
             const button = document.createElement('button');
             button.textContent = action.charAt(0).toUpperCase() + action.slice(1);
             button.classList.add(action);
