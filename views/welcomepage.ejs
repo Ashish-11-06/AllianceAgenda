@@ -7,41 +7,92 @@
     <title>Welcome</title>
     <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:400,600" rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
+    <script src="/public/welScript.js"></script>
     <!-- <link rel="stylesheet" href="/nav.css"> -->
 	<script src="https://unpkg.com/animejs@3.0.1/lib/anime.min.js"></script>
     <script src="https://unpkg.com/scrollreveal@4.0.0/dist/scrollreveal.min.js"></script>
+    
+
 </head>
 
 <style>
+    .announcement-container {
+        border: 2px red;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.announcement-title {
+  margin-bottom: 2px;
+}
+
+.announcement-content {
+  margin-bottom: 2px;
+}
+
+.announcement-created-by {
+  margin-bottom: 2px;
+}
+
+.announcement-created-at {
+  margin-bottom: 2px;
+}
+
+.announcement-separator {
+  margin-top: 2px;
+}
+
+#announcement-button {
+    margin-top: 5px;
+    background-color: #007BFF; /* Initial background color */
+    color: white; /* Initial text color */
+    border: none;
+    /* padding: 10px 20px; */
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+#announcement-button:hover {
+    background-color: #0056b3; /* Background color on hover */
+    color: #ffffff; /* Text color on hover */
+}
+
+
+.announcement-delete-button {
+  margin-top: 2px;
+  
+}
     #heading
     {
         font-size: 100px;
         font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 
     }
+    .announcement-class {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px; /* Adjust the gap between grid items as needed */
+}
+
+.announcement-class div {
+    /* border: 1px solid #ccc; */
+    padding: 2px;
+    background-color: #033965;
+    /* border-radius: 8px; */
+}
+
+
 </style>
 <body class="is-boxed has-animations">
-    <nav class="navbar">
-        <div class="logo">MyWebsite</div>
-        <ul class="nav-links">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
-        <div class="burger">
-            <div class="line1"></div>
-            <div class="line2"></div>
-            <div class="line3"></div>
-        </div>
-    </nav>
     <div class="body-wrap">
         <header class="site-header">
             <div class="container">
                 <div class="site-header-inner">
                     <div class="brand header-brand">
                         <h1 class="m-0">
-							<a href="#">
+							<a href="/">
 								<img class="header-logo-image" src="/logo.svg" alt="Logo">
                             </a>
                         </h1>
@@ -87,18 +138,22 @@
                 <div class="container">
 
                     <section id="announcementSection" style="display: none;">
-                        <div id="announcements"></div>
+                        <div id="announcements" class="announcement-class"></div>
                 
                         <form id="addAnnouncementForm">
                             <h2>Add Announcement</h2>
-                            <label for="title">Title:</label><br>
-                            <input type="text" id="title" name="title" required><br>
-                            <label for="content">Content:</label><br>
-                            <textarea id="content" name="content" rows="4" required></textarea><br>
-                            <label for="createdBy">Created By:</label><br>
-                            <input type="text" id="createdBy" name="createdBy" required><br><br>
-                            <button type="submit">Add Announcement</button>
+                            <label for="title">Title:</label>
+                            <input type="text" id="title" name="title" required>
+                            <label for="content">Content:</label>
+                            <input id="content" name="content" rows="4" required></input>
+                            <!-- <label for="createdBy">Created By:</label> -->
+                            <input type="hidden" id="createdBy" name="createdBy" value="">
+                            <button type="submit" id="announcement-button">Add Announcement</button>
                         </form>
+                    </section>
+
+                    <section>
+                        
                     </section>
 
 					<div class="features-inner section-inner has-bottom-divider">
@@ -131,6 +186,9 @@
                                     <p class="text-sm mb-0">Fermentum posuere urna nec tincidunt praesent semper feugiat nibh. A arcu cursus vitae congue mauris. Nam at lectus urna duis convallis. Mauris rhoncus aenean vel elit scelerisque mauris.</p>
                                 </div>
                             </div>
+
+
+
                             <div class="feature text-center is-revealing" class="communication" id="communication">
                                 <div class="feature-inner">
                                     <div class="feature-icon">
@@ -152,7 +210,12 @@
                                 </div>
                             </div>
                         </div>
+
+                       
                     </div>
+
+
+                   
                 </div>
             </section>
 
@@ -234,8 +297,36 @@
     </div>
 
     <script src="/main.min.js"></script>
-
     <script>
+        
+document.getElementById("Gallery").addEventListener("click", function() {
+    window.location.href = "/gallery";
+});
+
+document.getElementById("tasks").addEventListener("click", function() {
+    window.location.href = "/task";
+});
+
+document.getElementById("communication").addEventListener("click", function() {
+    window.location.href = "/communication";
+});
+
+
+        // Retrieve the user's name from the query parameters or any other source
+        const urlParams = new URLSearchParams(window.location.search);
+        const firstName = urlParams.get('firstname');
+        const lastName = urlParams.get('lastname');
+        const userId = urlParams.get('id')
+    
+        // Store the user's name in a global variable
+        const userFullName = `${firstName} ${lastName}`;
+    
+        // Display the username on the page
+        document.getElementById('username').textContent = firstName;
+
+         // Set the "created by" field with the user's full name
+document.getElementById('createdBy').value = userId;
+
 const toggleButton = document.getElementById('toggleAnnouncementSection');
         const announcementSection = document.getElementById('announcementSection');
 
@@ -260,12 +351,15 @@ const toggleButton = document.getElementById('toggleAnnouncementSection');
                     announcements.forEach(announcement => {
                         const announcementElement = document.createElement('div');
                         announcementElement.innerHTML = `
-                            <h2>${announcement.title}</h2>
-                            <p>${announcement.content}</p>
-                            <p>Created by: ${announcement.createdBy}</p>
-                            <p>Created at: ${new Date(announcement.createdAt).toLocaleString()}</p>
-                            <button onclick="deleteAnnouncement('${announcement._id}')">Delete</button>
-                            <hr />
+                        <div class="announcement-container">
+  <h6 class="announcement-title">${announcement.title}</h6>
+  <p class="announcement-content">${announcement.content}</p>
+  <p class="announcement-created-by">Created by: ${announcement.firstName} ${announcement.lastName}</p>
+  
+  <p class="announcement-created-at">Created at: ${new Date(announcement.createdAt).toLocaleString()}</p>
+  <button class="announcement-delete-button" onclick="deleteAnnouncement('${announcement.id}')">Delete</button>
+  <hr class="announcement-separator" />
+</div>
                         `;
                         announcementsDiv.appendChild(announcementElement);
                     });
@@ -281,7 +375,7 @@ const toggleButton = document.getElementById('toggleAnnouncementSection');
             const newAnnouncement = {
                 title: formData.get('title'),
                 content: formData.get('content'),
-                createdBy: formData.get('createdBy')
+                createdBy: userId
             };
 
             fetch('/add-announcement', {
@@ -303,41 +397,62 @@ const toggleButton = document.getElementById('toggleAnnouncementSection');
         });
 
         // Function to delete an announcement
+        // Function to delete an announcement
         function deleteAnnouncement(id) {
-            fetch(`fetch-announcements${id}`, {
+    // Fetch the announcement details to check createdBy
+    fetch(`/fetch-announcements/${id}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch announcement details');
+            }
+            return response.json();
+        })
+        .then(announcement => {
+            const createdBy = announcement.createdBy;
+           
+
+            // Compare createdBy and userId to check authorization
+            if (`${createdBy}` !== `${userId}`) {
+                // User is not authorized to delete this announcement
+                alert(`You are not authorized to delete this announcement, its not created by you!`);
+                return;
+            }
+
+            // Delete the announcement
+            fetch(`/delete-announcement/${id}`, {
                 method: 'DELETE',
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to delete announcement');
+                }
+               
+            })
             .then(data => {
                 console.log('Success:', data);
                 fetchAndDisplayAnnouncements(); // Refresh the list of announcements
             })
-            .catch((error) => {
+            .catch(error => {
                 console.error('Error:', error);
             });
-        }
+        })
+        .catch(error => {
+            console.error('Error fetching or deleting announcement:', error);
+        });
+}
+
+
+
 // ----------------------------------------------------------
-        // Retrieve the username from the query parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        const username = urlParams.get('username');
+        // // Retrieve the username from the query parameters
+        // const urlParams = new URLSearchParams(window.location.search);
+        // const username = urlParams.get('username');
     
-        // Display the username on the page
-        document.getElementById('username').textContent = username;   
-      </script>
-        
-        <script>
-        document.getElementById("Gallery").addEventListener("click", function() {
-            window.location.href = "/gallery";
-        });
-
-        document.getElementById("tasks").addEventListener("click", function() {
-            window.location.href = "/task";
-        });
-
-        document.getElementById("communication").addEventListener("click", function() {
-            window.location.href = "/communication";
-        });
-        </script>
+        // // Display the username on the page
+        // document.getElementById('username').textContent = username;   
+      
+    </script>
+   
   
 </body>
 </html>
