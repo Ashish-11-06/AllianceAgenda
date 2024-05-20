@@ -7,6 +7,7 @@
     <title>Welcome</title>
     <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:400,600" rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
+    <!-- <link rel="stylesheet" href="/nav.css"> -->
 	<script src="https://unpkg.com/animejs@3.0.1/lib/anime.min.js"></script>
     <script src="https://unpkg.com/scrollreveal@4.0.0/dist/scrollreveal.min.js"></script>
 </head>
@@ -20,6 +21,20 @@
     }
 </style>
 <body class="is-boxed has-animations">
+    <nav class="navbar">
+        <div class="logo">MyWebsite</div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <div class="burger">
+            <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="line3"></div>
+        </div>
+    </nav>
     <div class="body-wrap">
         <header class="site-header">
             <div class="container">
@@ -70,7 +85,24 @@
 
             <section class="features section" id="targetDiv">
                 <div class="container">
+
+                    <section id="announcementSection" style="display: none;">
+                        <div id="announcements"></div>
+                
+                        <form id="addAnnouncementForm">
+                            <h2>Add Announcement</h2>
+                            <label for="title">Title:</label><br>
+                            <input type="text" id="title" name="title" required><br>
+                            <label for="content">Content:</label><br>
+                            <textarea id="content" name="content" rows="4" required></textarea><br>
+                            <label for="createdBy">Created By:</label><br>
+                            <input type="text" id="createdBy" name="createdBy" required><br><br>
+                            <button type="submit">Add Announcement</button>
+                        </form>
+                    </section>
+
 					<div class="features-inner section-inner has-bottom-divider">
+                       
                         <div class="features-wrap" >
                             <div class="feature text-center is-revealing" id="Gallery">
                                 <div class="feature-inner" >
@@ -78,6 +110,15 @@
 										<img src="/feature-icon-01.svg" alt="Feature 01">
                                     </div>
                                     <h4 class="feature-title mt-24">Photo Gallery</h4>
+                                    <p class="text-sm mb-0">Fermentum posuere urna nec tincidunt praesent semper feugiat nibh. A arcu cursus vitae congue mauris. Nam at lectus urna duis convallis. Mauris rhoncus aenean vel elit scelerisque mauris.</p>
+                                </div>
+                            </div>
+                            <div class="feature text-center is-revealing">
+                                <div class="feature-inner">
+                                    <div class="feature-icon">
+										<img src="/feature-icon-05.svg" alt="Feature 05">
+                                    </div>
+                                    <h4 class="feature-title mt-24" id="toggleAnnouncementSection">Announcements</h4>
                                     <p class="text-sm mb-0">Fermentum posuere urna nec tincidunt praesent semper feugiat nibh. A arcu cursus vitae congue mauris. Nam at lectus urna duis convallis. Mauris rhoncus aenean vel elit scelerisque mauris.</p>
                                 </div>
                             </div>
@@ -99,24 +140,8 @@
                                     <p class="text-sm mb-0">Fermentum posuere urna nec tincidunt praesent semper feugiat nibh. A arcu cursus vitae congue mauris. Nam at lectus urna duis convallis. Mauris rhoncus aenean vel elit scelerisque mauris.</p>
                                 </div>
                             </div>
-                            <!-- <div class="feature text-center is-revealing">
-                                <div class="feature-inner">
-                                    <div class="feature-icon">
-										<img src="/feature-icon-04.svg" alt="Feature 04">
-                                    </div>
-                                    <h4 class="feature-title mt-24">Expenses</h4>
-                                    <p class="text-sm mb-0">Fermentum posuere urna nec tincidunt praesent semper feugiat nibh. A arcu cursus vitae congue mauris. Nam at lectus urna duis convallis. Mauris rhoncus aenean vel elit scelerisque mauris.</p>
-                                </div>
-                            </div> -->
-							<div class="feature text-center is-revealing">
-                                <div class="feature-inner">
-                                    <div class="feature-icon">
-										<img src="/feature-icon-05.svg" alt="Feature 05">
-                                    </div>
-                                    <h4 class="feature-title mt-24">Announcements</h4>
-                                    <p class="text-sm mb-0">Fermentum posuere urna nec tincidunt praesent semper feugiat nibh. A arcu cursus vitae congue mauris. Nam at lectus urna duis convallis. Mauris rhoncus aenean vel elit scelerisque mauris.</p>
-                                </div>
-                            </div>
+                            
+							
                             <div class="feature text-center is-revealing">
                                 <div class="feature-inner">
                                     <div class="feature-icon">
@@ -211,6 +236,87 @@
     <script src="/main.min.js"></script>
 
     <script>
+const toggleButton = document.getElementById('toggleAnnouncementSection');
+        const announcementSection = document.getElementById('announcementSection');
+
+        toggleButton.addEventListener('click', function() {
+            if (announcementSection.style.display === 'none') {
+                announcementSection.style.display = 'block';
+                fetchAndDisplayAnnouncements();
+            } else {
+                announcementSection.style.display = 'none';
+            }
+        });
+
+        const announcementsDiv = document.getElementById('announcements');
+        const addAnnouncementForm = document.getElementById('addAnnouncementForm');
+
+        // Function to fetch and display announcements
+        function fetchAndDisplayAnnouncements() {
+            fetch('/fetch-announcements') // 
+                .then(response => response.json())
+                .then(announcements => {
+                    announcementsDiv.innerHTML = ''; // Clear existing announcements
+                    announcements.forEach(announcement => {
+                        const announcementElement = document.createElement('div');
+                        announcementElement.innerHTML = `
+                            <h2>${announcement.title}</h2>
+                            <p>${announcement.content}</p>
+                            <p>Created by: ${announcement.createdBy}</p>
+                            <p>Created at: ${new Date(announcement.createdAt).toLocaleString()}</p>
+                            <button onclick="deleteAnnouncement('${announcement._id}')">Delete</button>
+                            <hr />
+                        `;
+                        announcementsDiv.appendChild(announcementElement);
+                    });
+                })
+                .catch(error => console.error('Error fetching announcements:', error));
+        }
+
+        // Function to handle form submission and add an announcement
+        addAnnouncementForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(addAnnouncementForm);
+            const newAnnouncement = {
+                title: formData.get('title'),
+                content: formData.get('content'),
+                createdBy: formData.get('createdBy')
+            };
+
+            fetch('/add-announcement', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newAnnouncement),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                addAnnouncementForm.reset();
+                fetchAndDisplayAnnouncements(); // Refresh the list of announcements
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        });
+
+        // Function to delete an announcement
+        function deleteAnnouncement(id) {
+            fetch(`fetch-announcements${id}`, {
+                method: 'DELETE',
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                fetchAndDisplayAnnouncements(); // Refresh the list of announcements
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+// ----------------------------------------------------------
         // Retrieve the username from the query parameters
         const urlParams = new URLSearchParams(window.location.search);
         const username = urlParams.get('username');
