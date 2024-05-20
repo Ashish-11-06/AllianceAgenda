@@ -88,7 +88,25 @@ app.get('/communication', (req, res) => {
   res.render('communication');
 });
 
+// -----------------------------------------------------------------------------
+app.get('/fetch-announcements', (req, res) => {
+  pool.query('SELECT * FROM announcements', (err, results) => {
+      if (err) throw err;
+      res.json(results);
+  });
+});
 
+// API to create a new announcement
+app.post('/add-announcement', (req, res) => {
+  const { title, content, createdBy } = req.body;
+  const createdAt = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+  const query = 'INSERT INTO announcements (title, content, createdBy, createdAt) VALUES (?, ?, ?, ?)';
+  pool.query(query, [title, content, createdBy, createdAt], (err, results) => {
+      if (err) throw err;
+      res.send(results);
+  });
+});
 // -----------------------------------------------------------------------------
 let tasks = [];
 
