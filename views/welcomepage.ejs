@@ -317,6 +317,7 @@ document.getElementById("communication").addEventListener("click", function() {
         const firstName = urlParams.get('firstname');
         const lastName = urlParams.get('lastname');
         const userId = urlParams.get('id')
+        const designation =urlParams.get('designation')
     
         // Store the user's name in a global variable
         const userFullName = `${firstName} ${lastName}`;
@@ -371,6 +372,11 @@ const toggleButton = document.getElementById('toggleAnnouncementSection');
         addAnnouncementForm.addEventListener('submit', function(event) {
             event.preventDefault();
             
+            if(designation !== 'HOD' && designation !== 'Director'){
+                alert(`You are not authorized to add announcement ${designation}`);
+                return;
+            }
+
             const formData = new FormData(addAnnouncementForm);
             const newAnnouncement = {
                 title: formData.get('title'),

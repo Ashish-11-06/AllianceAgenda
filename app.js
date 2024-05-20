@@ -311,9 +311,11 @@ app.post('/login', (req, res) => {
 
       const user = results[0]; // Assuming `results` contains the user data
       const queryParams = new URLSearchParams({
+        
           id: user.user_id,
           firstname: user.firstname,
           lastname: user.lastname,
+          designation: user.designation,
           // Add other user data as needed
           // email: user.email,
           // age: user.age
