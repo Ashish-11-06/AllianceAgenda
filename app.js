@@ -22,12 +22,12 @@ app.set('view engine', 'ejs');
 const bcrypt = require('bcrypt');
 
 app.post('/submit-form', async (req, res) => {
-  const { firstname, lastname, email, phone_number, password } = req.body;
+  const { firstname, lastname, email, phone_number, password, designation} = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
 
   pool.query(
-    'INSERT INTO users (firstname, lastname, email, phone_number, password) VALUES (?, ?, ?, ?, ?)',
-    [firstname, lastname, email, phone_number, hashedPassword],
+    'INSERT INTO users (firstname, lastname, email, phone_number, password, designation) VALUES (?, ?, ?, ?, ?, ?)',
+    [firstname, lastname, email, phone_number, hashedPassword, designation],
     (error, results) => {
       if (error) {
         if (error.code === 'ER_DUP_ENTRY') {
@@ -89,12 +89,52 @@ app.get('/communication', (req, res) => {
 });
 
 // -----------------------------------------------------------------------------
+// Endpoint to fetch announcements with user's name
 app.get('/fetch-announcements', (req, res) => {
-  pool.query('SELECT * FROM announcements', (err, results) => {
-      if (err) throw err;
+  const query = `
+      SELECT 
+          announcements.id, 
+          announcements.title, 
+          announcements.content, 
+          users.firstName, 
+          users.lastName, 
+          announcements.createdAt
+      FROM announcements
+      INNER JOIN users ON announcements.createdBy = users.user_id
+  `;
+  pool.query(query, (err, results) => {
+      if (err) {
+          console.error('Error fetching announcements:', err);
+          return res.status(500).send('Failed to fetch announcements');
+      }
       res.json(results);
   });
 });
+
+// /fetch by id
+app.get('/fetch-announcements/:id', (req, res) => {
+  const announcementId = req.params.id;
+
+  const query = `
+      SELECT 
+      announcements.createdBy
+      FROM announcements
+      WHERE announcements.id = ?
+  `;
+
+  pool.query(query, [announcementId], (err, results) => {
+      if (err) {
+          console.error('Error fetching announcement:', err);
+          return res.status(500).send('Failed to fetch announcement');
+      }
+      if (results.length === 0) {
+          return res.status(404).send('Announcement not found');
+      }
+      res.json(results[0]); // Assuming you expect only one announcement with this ID
+  });
+});
+
+
 
 // API to create a new announcement
 app.post('/add-announcement', (req, res) => {
@@ -105,6 +145,20 @@ app.post('/add-announcement', (req, res) => {
   pool.query(query, [title, content, createdBy, createdAt], (err, results) => {
       if (err) throw err;
       res.send(results);
+  });
+});
+
+// API to delete an announcement
+app.delete('/delete-announcement/:id', (req, res) => {
+  const announcementId = req.params.id;
+
+  const query = 'DELETE FROM announcements WHERE id = ?';
+  pool.query(query, [announcementId], (err, results) => {
+    if (err) throw err;
+    if (results.affectedRows === 0) {
+      return res.status(404).send('Announcement not found');
+    }
+    res.send('Announcement deleted successfully');
   });
 });
 // -----------------------------------------------------------------------------
@@ -255,8 +309,16 @@ app.post('/login', (req, res) => {
         return res.status(401).send('Invalid email or password');
       }
 
-      const username = results[0].firstname;
-      res.redirect(`/welcomepage?username=${encodeURIComponent(username)}`);
+      const user = results[0]; // Assuming `results` contains the user data
+      const queryParams = new URLSearchParams({
+          id: user.user_id,
+          firstname: user.firstname,
+          lastname: user.lastname,
+          // Add other user data as needed
+          // email: user.email,
+          // age: user.age
+      }).toString();
+      res.redirect(`/welcomepage?${queryParams}`);
     }
   );
 });
