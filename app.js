@@ -46,7 +46,9 @@ app.post('/submit-form', async (req, res) => {
 
 //  ------------------------------------------------------------------------------------------
 
-
+app.get('/try', (req, res) => {
+  res.render('try');
+});
 
 
 app.get('/', (req, res) => {
@@ -98,7 +100,7 @@ app.get('/fetch-announcements', (req, res) => {
           announcements.content, 
           users.firstName, 
           users.lastName, 
-          announcements.createdAt
+          DATE_FORMAT(CONVERT_TZ(announcements.createdAt, '+00:00', '+05:30'), '%Y-%m-%d %H:%i:%s') as createdAt
       FROM announcements
       INNER JOIN users ON announcements.createdBy = users.user_id
   `;
@@ -110,6 +112,7 @@ app.get('/fetch-announcements', (req, res) => {
       res.json(results);
   });
 });
+
 
 // /fetch by id
 app.get('/fetch-announcements/:id', (req, res) => {
