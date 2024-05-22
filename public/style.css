@@ -1794,11 +1794,11 @@ label {
 }
 
 .cta .section-inner {
-    padding: 48px 16px
+    padding: 10px 5px
 }
 
 .cta .section-title {
-    margin-bottom: 40px
+    margin-bottom: 10px
 }
 
 .cta-inner {
@@ -1814,7 +1814,7 @@ label {
     top: -117px;
     width: 160px;
     height: 187px;
-    background-image: url("../images/cta-illustration.svg");
+    background-image: url("cta-illustration.svg");
     background-repeat: no-repeat
 }
 
@@ -1828,12 +1828,12 @@ label {
     }
 
     .cta .section-inner {
-        padding: 64px 32px
+        padding: 10px 10px
     }
 
     .cta .section-title {
         margin-bottom: 0;
-        padding-right: 24px
+        padding-right: 20px
     }
 
     .cta-inner {
