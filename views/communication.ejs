@@ -4,208 +4,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AA communication</title>
-     <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:400,600" rel="stylesheet">
-    <link rel="stylesheet" href="/style.css">
-	<script src="https://unpkg.com/animejs@3.0.1/lib/anime.min.js"></script>
-    <script src="https://unpkg.com/scrollreveal@4.0.0/dist/scrollreveal.min.js"></script>
+    <title>AA Communication</title>
+
     <style>
+        #messages {
+            border: 1px solid #ccc;
+            padding: 20px;
+            overflow-y: auto;
+            width: 100%;
+            max-width: 800px;
+            height: 200px;
+            transition: height 0.3s;
+        }
 
-#messages {
-    border: 1px solid #ccc;
-    padding: 20px;
-    overflow-y: auto;
-    width: 100%;
-    max-width: 800px;
-    height: 200px;
-    /* Initial height */
-    transition: height 0.3s;
-    /* Smooth height change */
-}
+        #message-form {
+            display: flex;
+            width: 100%;
+            max-width: 800px;
+            background-color: #f2f2f2;
+            padding: 10px;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
 
-#message-form {
-    display: flex;
-    width: 100%;
-    max-width: 800px;
-    background-color: #f2f2f2;
-    /* Light gray for form */
-    padding: 10px;
-    border: 1px solid #ccc;
-    /* Border for the form */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    /* Soft shadow */
-}
+        #message-input,
+        #username {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
 
-#message-input,
-#username {
-    flex-grow: 1;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    /* Rounded corners */
-    margin-right: 10px;
-}
+        #message-input {
+            font-size: 16px;
+        }
 
-#message-input {
-    font-size: 16px;
-    /* Larger font */
-}
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
 
-button {
-    padding: 10px 20px;
-    /* Padding for button */
-    background-color: #007bff;
-    /* Blue button */
-    color: white;
-    /* White text */
-    border: none;
-    border-radius: 5px;
-    /* Rounded corners */
-    cursor: pointer;
-    /* Pointer cursor */
-}
+        button:hover {
+            background-color: #0056b3;
+        }
 
-button:hover {
-    background-color: #0056b3;
-    /* Darker on hover */
-}
+        p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
 
-p {
-    margin: 5px 0;
-    /* Reduced margin for paragraphs */
-    font-size: 14px;
-    /* Smaller font size for messages */
-}
+        #messages p {
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
 
-/* Add more CSS per message */
-#messages p {
-    padding: 10px;
-    border-radius: 10px;
-    margin-bottom: 10px;
-}
+        #messages p:nth-child(even) {
+            /* background-color: #f5f5f5; */
+        }
 
-#messages p:nth-child(even) {
-    background-color: #f5f5f5;
-}
+        #messages p:hover {
+            background-color: #f9f9f9;
+        }
 
-#messages p:hover {
-    background-color: #f9f9f9;
-}
+        #message-input:focus {
+            outline: none;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+        }
 
-/* Message input styles */
-#message-input {
-    border-radius: 20px;
-    padding: 10px;
-    font-size: 16px;
-    line-height: 1.5;
-    color: #333;
-    width: 100%;
-}
+        #messages .sent {
+            align-self: flex-end;
+            text-align: right;
+        }
 
-#message-input:focus {
-    outline: none;
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
-}
+        #messages .received {
+            align-self: flex-start;
+            text-align: left;
+        }
 
-/* Button styles */
-button {
-    border-radius: 20px;
-    padding: 10px;
-    font-size: 16px;
-}
-
-/* Sent messages on the right side */
-#messages .sent {
-    align-self: flex-end;
-    text-align: right;
-}
-
-/* Loaded messages on the left side */
-#messages .received {
-    align-self: flex-start;
-    text-align: left;
-}
-
-/* Different colors for different usernames */
-#messages .username-color-1 {
-    color: #007bff;
-}
-
-#messages .username-color-2 {
-    color: #28a745;
-}
-
-#messages .username-color-3 {
-    color: #dc3545;
-}
-
-#messages .username-color-4 {
-    color: #ffc107;
-}
+        /* Username colors */
+        .username-color-1 { color: #007bff; }
+        .username-color-2 { color: #28a745; }
+        .username-color-3 { color: #dc3545; }
+        .username-color-4 { color: #ffc107; }
     </style>
 </head>
 
 <body>
-    <main>
-    <section class="hero">
-        <div class="container">
-            <div id="heading">messages</div>
-            <div class="hero-inner">
-                <div class="hero-copy">
-                    <div id="messages"></div>
-                    
-                    <div class="hero-figure-box hero-figure-box-09" data-rotation="-52deg"></div>
-                    
-                    <form id="message-form">
-                        <input type="text" id="username" placeholder="Enter your username..." class="sent">
-                        <input type="text" id="message-input" placeholder="Type your message here...">
-                        <button type="submit">Send</button>
-                    </form> 
-                 </div>
-                 <div class="hero-figure-box hero-figure-box-08" data-rotation="-22deg"></div>
-                 <div class="hero-figure-box hero-figure-box-10" data-rotation="-50deg"></div>
-                 <div class="hero-figure-box hero-figure-box-03" data-rotation="0deg"></div>
-                 <div class="hero-figure-box hero-figure-box-04" data-rotation="-135deg"></div>
-                </div>
-                <div class="hero-figure anime-element">
-                    <svg class="placeholder" width="528" height="396" viewBox="0 0 528 396">
-                        <rect width="528" height="396" style="fill:transparent;" />
-                    </svg>
-                    <div class="hero-figure-box hero-figure-box-01" data-rotation="45deg"></div>
-                    <div class="hero-figure-box hero-figure-box-02" data-rotation="-45deg"></div>
-                   
-                    <div class="hero-figure-box hero-figure-box-05"></div>
-                    <div class="hero-figure-box hero-figure-box-06"></div>
-                    <div class="hero-figure-box hero-figure-box-07"></div>
-                    
-                </div>
-            </div>
-        </div>
-    </section>
+    <div id="messages"></div>
+    <form id="message-form">
+        <input type="text" id="username" placeholder="Enter your username..." class="sent">
+        <input type="text" id="message-input" placeholder="Type your message here...">
+        <button type="submit">Send</button>
+    </form>
 
-    <section class="pricing section">
-        <div class="container-sm">
-            <div class="pricing-inner section-inner">
-                <div class="pricing-header text-center">
-                    <h2 class="section-title mt-0">hAVE a Nice Day </h2>
-                    <p class="section-paragraph mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut ad quis nostrud.</p>
-                </div>
-                 </div>
-        </div>
-    </section>
-</main>
-
-
-
-    
-
-    <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- Include Socket.IO -->
     <script src="/socket.io/socket.io.js"></script>
 
-    <!-- Client-side Script -->
     <script>
         const messagesDiv = $("#messages");
         const messageForm = $("#message-form");
@@ -213,86 +113,67 @@ button {
         const usernameInput = $("#username");
 
         const socket = io("http://localhost:3000");
-        // Scroll to the bottom of the messages div
+
         const scrollToBottom = () => {
-            messagesDiv.scrollTop(messagesDiv[0].scrollHeight); // Set scroll position to the maximum height
+            messagesDiv.scrollTop(messagesDiv[0].scrollHeight);
         };
 
-        // Function to adjust message div height based on the number of messages
         const adjustMessagesHeight = () => {
-            const numMessages = messagesDiv.children().length; // Count number of messages
-            const baseHeight = 200; // Base height in pixels
-            const heightPerMessage = 20; // Extra height per message in pixels
-            const maxDivHeight = 400; // Maximum height of the div
+            const numMessages = messagesDiv.children().length;
+            const baseHeight = 200;
+            const heightPerMessage = 20;
+            const maxDivHeight = 400;
 
-            // Calculate new height and ensure it's within the max limit
             const newHeight = Math.min(baseHeight + numMessages * heightPerMessage, maxDivHeight);
-
-            // Set the new height with a smooth transition
             messagesDiv.css("height", `${newHeight}px`);
         };
 
-        // Function to send a message
-        function sendMessage() {
+        const sendMessage = () => {
             const username = usernameInput.val().trim();
             const message = messageInput.val().trim();
 
             if (username && message) {
                 socket.emit("chat message", { username, message });
             }
-        }
+        };
 
-        // Handle incoming messages
         socket.on("chat message", (data) => {
-            
             const currentUser = usernameInput.val().trim();
-            
-            const messageElement = $("<p></p>");
-            if (data.username === currentUser) {
-                        messageElement.addClass('sent'); // Add the 'sent' class
-                    } else {
-                        messageElement.addClass('received'); // Add the 'received' class
-                    }
-            messageElement.html(`<strong>${data.username} (${data.timestamp}):</strong> ${data.message}`);
+            const messageElement = $("<p></p>").addClass(data.username === currentUser ? 'sent' : 'received');
+
+            const usernameClass = `username-color-${data.username.length % 4 + 1}`;
+            messageElement.html(`<strong class="${usernameClass}">${data.username} (${data.timestamp}):</strong> ${data.message}`);
             messagesDiv.append(messageElement);
 
-            // Scroll to the bottom when a new message is added
             scrollToBottom();
-
-            // Adjust message div height when a new message is added
             adjustMessagesHeight();
         });
 
-        // Event listener for form submission
         messageForm.on("submit", (e) => {
-            // e.preventDefault();
+            e.preventDefault();
             sendMessage();
-            messageInput.val(""); // Clear the message input
+            messageInput.val("");
         });
 
-        // Function to fetch old messages from the server
-        function fetchOldMessages() {
+        const fetchOldMessages = () => {
             $.get('/messages', function (data) {
                 data.forEach(function (message) {
-                    // Format the timestamp to match the sent message format
                     const formattedTimestamp = new Date(message.timestamp).toLocaleString();
-
                     const messageElement = $("<p></p>");
-                    messageElement.html(`<strong>${message.username} (${formattedTimestamp}):</strong> ${message.message}`);
+                    const usernameClass = `username-color-${message.username.length % 4 + 1}`;
+
+                    messageElement.html(`<strong class="${usernameClass}">${message.username} (${formattedTimestamp}):</strong> ${message.message}`);
                     messagesDiv.append(messageElement);
                 });
 
-                // After appending all old messages, adjust the height and scroll to bottom
                 adjustMessagesHeight();
                 scrollToBottom();
             });
-        }
+        };
 
-        // Call the fetchOldMessages function when the page loads
         $(document).ready(function () {
             fetchOldMessages();
         });
-
     </script>
 </body>
 
