@@ -1,6 +1,34 @@
+
 document.addEventListener('DOMContentLoaded', () => {
     const taskForm = document.getElementById('taskForm');
     const taskList = document.getElementById('taskList');
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const assignedBy = urlParams.get('id');
+    const assignedToSelect = document.getElementById('assigned_to');
+
+
+    assignedToSelect.addEventListener('click', () => {
+    fetch('/fetch-data')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to fetch users');
+        }
+        return response.json();
+    })
+    .then(users => {
+        users.forEach(user => {
+            const option = document.createElement('option');
+            option.value = user.user_id;
+            option.textContent = `${user.user_id} ${user.firstname} ${user.lastname}`;
+            assignedToSelect.appendChild(option);
+        });
+    })
+    .catch(error => {
+        console.error('Error fetching users:', error.message);
+        alert('Error fetching users: ' + error.message);
+    });
+});
 
     fetchTasks();
 
@@ -8,13 +36,17 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
 
         const task = {
-            title: document.getElementById('title').value,
+            Ttitle: document.getElementById('Ttitle').value,
             description: document.getElementById('description').value,
             dueDate: document.getElementById('dueDate').value,
             priority: document.getElementById('priority').value,
-            assigned_to: document.getElementById('assigned_to').value,
-            assigned_by: document.getElementById('assigned_by').value
+            // assigned_to: document.getElementById('assigned_to').value,
+            assigned_to: assignedToSelect.value,
+            // assigned_by: document.getElementById('assigned_by').value,
+            assigned_by: assignedBy 
         };
+
+        console.log('Task data being sent:', task);
 
         fetch('/task', {
             method: 'POST',
@@ -58,33 +90,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Error fetching tasks: ' + error.message);
             });
     }
-    
-    
 
     function addTaskToList(task) {
-        const li = document.createElement('li');
-        li.dataset.id = task.id;
-        const span = document.createElement('span');
-        span.innerHTML = `<strong>${task.title}</strong> - ${task.description} (Due: ${task.dueDate}, Priority: ${task.priority}, Assigned to: ${task.assigned_to}, Assigned by: ${task.assigned_by}) - Status: ${task.status || 'Pending'}`;
-        
-        li.appendChild(span);
+        const taskElement = document.createElement('div');
+        // taskElement.classList.add('task-container');
+        taskElement.dataset.id = task.id;
 
-        const buttonsDiv = document.createElement('div');
-        ['complete', 'delete'].forEach(action => {
-        // ['complete', 'edit', 'delete'].forEach(action => { //if wants to add edit option
-            const button = document.createElement('button');
-            button.textContent = action.charAt(0).toUpperCase() + action.slice(1);
-            button.classList.add(action);
-            button.addEventListener('click', () => {
-                if (action === 'complete') updateTaskStatus(task.id, 'Completed');
-                if (action === 'edit') editTask(task);
-                if (action === 'delete') deleteTask(task.id, li);
-            });
-            buttonsDiv.appendChild(button);
+        const Ttitle = task.Ttitle || task.title || 'No Title';
+
+        taskElement.innerHTML = `
+        <div class="announcement-container">
+        <div class="task-container">
+            <h6 class="task-title">${Ttitle}</h6>
+            <p class="task-content">${task.description}</p>
+            <p class="task-content">Due: ${task.dueDate}</p>
+            <p class="task-content">Priority: ${task.priority}</p>
+            <p class="task-created-by">Assigned to: ${task.assigned_to}</p>
+            <p class="task-created-by">Assigned by: ${task.assigned_by}</p>
+            <p class="task-created-at">Status: ${task.status}</p>
+            <div class="task-buttons">
+                <button class="complete">Complete</button>
+                <button class="delete">Delete</button>
+            </div>
+            <hr class="task-separator" />
+            </div>
+            </div>
+        `;
+
+        taskElement.querySelector('.complete').addEventListener('click', () => {
+            updateTaskStatus(task.id, 'Completed');
         });
 
-        li.appendChild(buttonsDiv);
-        taskList.appendChild(li);
+        taskElement.querySelector('.delete').addEventListener('click', () => {
+            deleteTask(task.id, taskElement);
+        });
+
+        taskList.appendChild(taskElement);
     }
 
     function updateTaskStatus(id, status) {
@@ -104,40 +145,15 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(updatedTask => {
             const taskItem = taskList.querySelector(`[data-id='${updatedTask.id}']`);
             if (taskItem) {
-                taskItem.querySelector('span').innerHTML = `<strong>${updatedTask.title}</strong> - ${updatedTask.description} (Due: ${updatedTask.formattedDueDate}, Priority: ${updatedTask.priority}, Assigned to: ${updatedTask.assigned_to}, Assigned by: ${updatedTask.assigned_by}) - Status: ${updatedTask.status}`;
+                taskItem.querySelector('.task-title').textContent = updatedTask.title;
+                taskItem.querySelector('.task-content').innerHTML = `
+                   
+                    Status: ${updatedTask.status}
+                `;
             }
         })
         .catch(error => {
             alert('Error updating task status: ' + error.message);
-        });
-    }
-
-    function editTask(task) {
-        const newTitle = prompt('Edit Task Title', task.title);
-        const newDescription = prompt('Edit Task Description', task.description);
-        const newDueDate = prompt('Edit Due Date', task.dueDate);
-        const newPriority = prompt('Edit Priority', task.priority);
-        const newAssignedTo = prompt('Edit Assigned To', task.assigned_to);
-        const newAssignedBy = prompt('Edit Assigned By', task.assigned_by);
-
-        fetch(`/task/${task.id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                title: newTitle,
-                description: newDescription,
-                dueDate: newDueDate,
-                priority: newPriority,
-                assigned_to: newAssignedTo,
-                assigned_by: newAssignedBy,
-            }),
-        })
-        .then(response => response.json())
-        .then(updatedTask => {
-            const taskItem = taskList.querySelector(`[data-id='${updatedTask.id}']`);
-            taskItem.querySelector('span').innerHTML = `<strong>${updatedTask.title}</strong> - ${updatedTask.description} (Due: ${updatedTask.dueDate}, Priority: ${updatedTask.priority}, Assigned to: ${updatedTask.assigned_to}, Assigned by: ${updatedTask.assigned_by}) - Status: ${updatedTask.status}`;
         });
     }
 
