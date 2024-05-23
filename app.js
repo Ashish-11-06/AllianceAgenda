@@ -183,13 +183,13 @@ app.get('/fetch-task', (req, res) => {
 
  
 app.post('/task', (req, res) => {
-  const { title, description, dueDate, priority, assigned_to, assigned_by } = req.body;
-  if (!title || !dueDate || !priority) {
+  const { Ttitle, description, dueDate, priority, assigned_to, assigned_by } = req.body;
+  if (!Ttitle || !dueDate || !priority) {
       return res.status(400).send('Title, dueDate, and priority are required');
   }
 
   const insertQuery = `INSERT INTO tasks (title, description, dueDate, priority, assigned_to, assigned_by) VALUES (?, ?, ?, ?, ?, ?)`;
-  pool.query(insertQuery, [title, description, dueDate, priority, assigned_to, assigned_by], (err, result) => {
+  pool.query(insertQuery, [Ttitle, description, dueDate, priority, assigned_to, assigned_by], (err, result) => {
       if (err) {
           console.error('Error adding task:', err.message);
           res.status(500).send('Failed to add task');
