@@ -348,17 +348,12 @@
     <script src="/main.min.js"></script>
     <script>
         
-document.getElementById("Gallery").addEventListener("click", function() {
-    window.location.href = "/gallery";
-});
+
 
 // document.getElementById("tasks").addEventListener("click", function() {
 //     window.location.href = "/task";
 // });
 
-document.getElementById("communication").addEventListener("click", function() {
-    window.location.href = "/communication";
-});
 
 
         // Retrieve the user's name from the query parameters or any other source
@@ -368,9 +363,24 @@ document.getElementById("communication").addEventListener("click", function() {
         const userId = urlParams.get('id')
         const designation =urlParams.get('designation')
     
+        const queryParams = new URLSearchParams({
+                firstname: firstName,
+                lastname: lastName,
+                id: userId,
+                designation: designation
+            }).toString();
+
         // Store the user's name in a global variable
         const userFullName = `${firstName} ${lastName}`;
+
+        document.getElementById("Gallery").addEventListener("click", function() {
+    window.location.href = `/Gallery?${queryParams}`;
+});
     
+document.getElementById("communication").addEventListener("click", function() {
+    window.location.href = `/communication?${queryParams}`;
+});
+
         // Display the username on the page
         document.getElementById('username').textContent = firstName;
 
