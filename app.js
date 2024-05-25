@@ -446,61 +446,79 @@ const socketIo = require('socket.io');
 const server = http.createServer(app);
 const io = socketIo(server);
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static('public'));
 
-// Change this line to serve files from the 'pages' directory
-app.use('/', express.static('pages'));
+const convertToIST = (date) => {
+  const IST_OFFSET = 5 * 60 * 60 * 1000 + 30 * 60 * 1000;
+  const dateIST = new Date(date.getTime() + IST_OFFSET);
+  return dateIST.toISOString().slice(0, 19).replace('T', ' ');
+};
 
-io.on('connection', (socket) => {
-    console.log('User connected');
-    // Listen for the 'message' event
-    const convertToIST = (date) => {
-      // Add 5 hours and 30 minutes to convert UTC to IST
-      const IST_OFFSET = 5 * 60 * 60 * 1000 + 30 * 60 * 1000;
-      const dateIST = new Date(date.getTime() + IST_OFFSET);
-      return dateIST.toISOString().slice(0, 19).replace('T', ' ');
-    };
-    
- // for fetching old messages from database
+
+
+// Fetch messages including sender's full name
 app.get('/messages', (req, res) => {
-  const { username } = req.query;
-  const query = 'SELECT * FROM messages ORDER BY timestamp';
+  const query = `
+      SELECT m.*, CONCAT(u.user_id, ', ', u.firstName, ' ', u.lastName) AS fullName 
+      FROM messages m 
+      JOIN users u ON m.sender_id = u.user_id 
+      ORDER BY m.sent_at`;
+  
   pool.query(query, (err, result) => {
-    if (err) {
-      console.error('Error fetching messages:', err);
-      res.status(500).json({ error: 'Error fetching messages' });
-      return;
-    }
-    res.json(result);
+      if (err) {
+          console.error('Error fetching messages:', err);
+          res.status(500).json({ error: 'Error fetching messages' });
+          return;
+      }
+      res.json(result);
   });
 });
-   
-    socket.on('chat message', (data) => {
-      const { username, message } = data;
-      const currentTimestamp = new Date(); // UTC time
-      const timestampIST = convertToIST(currentTimestamp); // Convert to IST
-    
-      const query = 'INSERT INTO messages (username, message, timestamp) VALUES (?, ?, ?)';
-      pool.query(query, [username, message, timestampIST], (err, result) => {
-        if (err) throw err;
-        console.log(`Inserted message: ${message} from ${username} at ${timestampIST}`);
+
+// Handle socket.io connections
+io.on('connection', (socket) => {
+  console.log('User connected');
+
+  socket.on('chat message', (data) => {
+      const { sender_id, content } = data;
+      if (!sender_id || !content) {
+          console.error('Invalid message data:', data);
+          return;
+      }
+      const currentTimestamp = new Date();
+      const timestampIST = convertToIST(currentTimestamp);
+
+      const insertMessageQuery = 'INSERT INTO messages (sender_id, content, sent_at) VALUES (?, ?, ?)';
+      pool.query(insertMessageQuery, [sender_id, content, currentTimestamp], (err, result) => {
+          if (err) {
+              console.error('Error inserting message:', err);
+              return;
+          }
+
+          const selectUserQuery = 'SELECT user_id, firstName, lastName FROM users WHERE user_id = ?';
+          pool.query(selectUserQuery, [sender_id], (err, userResult) => {
+              if (err) {
+                  console.error('Error fetching user details:', err);
+                  return;
+              }
+              const user = userResult[0];
+              const fullName = `${user.user_id}, ${user.firstName}, ${user.lastName}`;
+
+              data.sent_at = timestampIST;
+              data.fullName = fullName;  // Add full name to the data
+              io.emit('chat message', data);
+          });
       });
-    
-      // Emit with IST timestamp
-      data.timestamp = timestampIST;
-      io.emit('chat message', data);
-    });
-    
-    socket.on('disconnect', () => {
-        console.log('User disconnected');
-    });
+  });
+
+  socket.on('disconnect', () => {
+      console.log('User disconnected');
+  });
 });
 
 
 server.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+  console.log(`Server is running on port ${port}`);
 });
+
 // app.listen(port, () => {
 //   console.log(`Server is running on port ${port}`);
 // });
