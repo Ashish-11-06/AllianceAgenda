@@ -3,14 +3,13 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const pool = require('./db');
 
-
-
 const app = express();
 const port = 3000;
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Internal Server Error' });
@@ -18,6 +17,7 @@ app.use((err, req, res, next) => {
 
 
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 const bcrypt = require('bcrypt');
 
@@ -513,6 +513,119 @@ io.on('connection', (socket) => {
       console.log('User disconnected');
   });
 });
+
+// ---------------------------------------------------------------------------
+
+// Events Routes
+
+// Fetch all events with creator's full name
+app.get('/events', (req, res) => {
+  const query = `
+    SELECT e.*, CONCAT(u.firstname, ' ', u.lastname) AS created_by_name
+    FROM events e
+    JOIN users u ON e.created_by = u.user_id
+  `;
+
+  pool.query(query, (err, results) => {
+    if (err) {
+      console.error('Error executing MySQL query:', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+      return;
+    }
+    console.log('Retrieved events data:', results); 
+    res.render('events', { events: results });
+  });
+});
+
+// Add a new event
+app.post('/events', (req, res) => {
+  const { e_title, e_description, location, startTime, created_by } = req.body;
+
+  const insertQuery = `
+    INSERT INTO events (e_title, e_description, location, startTime, created_by) 
+    VALUES (?, ?, ?, ?, ?)`;
+
+  pool.query(insertQuery, [e_title, e_description, location, startTime, created_by], (err, result) => {
+    if (err) {
+      console.error('Error inserting event data:', err);
+      res.status(500).send('Error inserting event');
+      return;
+    }
+    console.log('event added succefully');
+    res.redirect('/events');
+  });
+});
+
+// Update an event
+app.put('/events/:event_id', (req, res) => {
+  const eventId = req.params.event_id;
+  const { e_title, e_description, location, startTime } = req.body;
+
+  const updateQuery = `
+    UPDATE events 
+    SET e_title = ?, e_description = ?, location = ?, startTime = ? 
+    WHERE event_id = ?`;
+
+  pool.query(updateQuery, [e_title, e_description, location, startTime, eventId], (err, result) => {
+    if (err) {
+      console.error('Error updating event data:', err);
+      res.status(500).send('Error updating event');
+      return;
+    }
+
+    res.redirect('/events');
+  });
+});
+
+// Fetch event details by ID
+app.get('/events/:event_id', (req, res) => {
+  const eventId = req.params.event_id;
+
+  // const selectQuery = 'SELECT * FROM events WHERE event_id = ?';
+  const selectQuery  = `
+  SELECT e.*, CONCAT(u.user_id, ' ',  u.firstname, ' ', u.lastname) AS created_by_name
+  FROM events e
+  JOIN users u ON e.created_by = u.user_id WHERE event_id = ?
+`;
+  pool.query(selectQuery, [eventId], (err, result) => {
+    if (err) {
+      console.error('Error fetching event details:', err);
+      res.status(500).send('Error fetching event details');
+      return;
+    }
+
+    if (result.length === 0) {
+      res.status(404).send('Event not found');
+      return;
+    }
+    console.log(result);
+    res.json(result[0]);
+  });
+});
+
+
+
+// Delete an event
+app.delete('/events/:event_id', (req, res) => {
+  const eventId = req.params.event_id;
+
+  const deleteQuery = 'DELETE FROM events WHERE event_id = ?';
+
+  pool.query(deleteQuery, [eventId], (err, result) => {
+    if (err) {
+      console.error('Error deleting event:', err);
+      res.status(500).send('Error deleting event');
+      return;
+    }
+
+    console.log('Event deleted successfully.');
+      res.status(200).send('Event deleted successfully.');
+  });
+});
+
+
+
+
 
 
 server.listen(port, () => {

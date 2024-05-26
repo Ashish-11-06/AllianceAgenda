@@ -74,7 +74,8 @@ const fetchOldMessages = () => {
             const messageContainer = $("<div></div>").addClass(message.sender_id == userId ? 'sent' : 'received');
             const usernameClass = `username-color-${message.sender_id % 4 + 1}`;
 
-            const userIdDiv = $(`<div class="user-id">ID: ${message.sender_id}</div>`);
+            // const userIdDiv = $(`<div class="user-id">ID: ${message.sender_id}</div>`);
+            const userIdDiv = $(`<div class="user-id"></div>`);
             const usernameDiv = $(`<div class="${usernameClass}">${message.fullName}</div>`);
             const timeDiv = $(`<div class="time">${formattedTimestamp}</div>`);
             const contentDiv = $(`<div class="message-content">${message.content}</div>`);

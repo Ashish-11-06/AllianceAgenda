@@ -1,0 +1,235 @@
+/* Universal selector to apply border to all elements */
+* {
+    /* border: 1px solid #ccc; */
+    box-sizing: border-box; /* Ensure borders are included in element width and height */
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.3s ease;
+}
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+.event-list {
+    margin-bottom: 20px;
+}
+
+.event-list h2 {
+    margin-bottom: 10px;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+.event-list .event-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.event-card {
+    flex: 1 1 calc(50% - 20px);
+    background: #f9f9f9;
+    border-radius: 4px;
+    padding: 10px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.event-card:hover {
+    background-color: #e9ecef;
+    transform: translateY(-5px);
+}
+
+.event-card h3 {
+    margin: 0;
+    transition: color 0.3s ease;
+}
+
+.event-card h3 a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.event-card h3 a:hover {
+    text-decoration: underline;
+    color: #007bff;
+}
+
+.event-card p {
+    margin: 10px 0;
+    transition: color 0.3s ease;
+}
+
+.event-card button {
+    padding: 5px 10px;
+    cursor: pointer;
+    background: #dc3545;
+    border: none;
+    color: #fff;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.event-card button:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+}
+
+#successMessage {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 4px;
+    transition: opacity 0.3s ease;
+}
+
+#event-details {
+    margin-bottom: 20px;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 4px;
+    transition: opacity 0.3s ease;
+}
+
+#event-details h2 {
+    margin-bottom: 10px;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+#event-details p {
+    margin-bottom: 5px;
+}
+
+#event-form {
+    margin-bottom: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+#event-form.visible {
+    opacity: 1;
+}
+
+#create-event {
+    margin-bottom: 20px;
+}
+#createButtonId{
+    padding: 10px 20px;
+    cursor: pointer;
+    background: #28a745; /* Green color */
+    border: none;
+    color: #fff;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+#createButtonId button:hover {
+    background: #1b149a; /* Darker green color */
+    transform: translateY(-5px);
+}
+
+#create-event button {
+    padding: 10px 20px;
+    cursor: pointer;
+    background: #28a745; /* Green color */
+    border: none;
+    color: #fff;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+#create-event button:hover {
+    /* background: #213488; Darker green color */
+    transform: translateY(-5px);
+}
+
+#event-form label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+#event-form input[type="text"],
+#event-form textarea,
+#event-form input[type="datetime-local"],
+#event-form input[type="number"] {
+    width: calc(100% - 20px);
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.3s ease;
+}
+
+#event-form input[type="text"]:focus,
+#event-form textarea:focus,
+#event-form input[type="datetime-local"]:focus,
+#event-form input[type="number"]:focus {
+    border-color: #007bff;
+}
+
+#event-form button {
+    padding: 10px 20px;
+    cursor: pointer;
+    background: #28a745;
+    border: none;
+    color: #fff;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+#event-form button[type="button"] {
+    background: #6c757d;
+}
+
+#event-form button[type="button"]:hover {
+    background: #5a6268;
+}
+
+#event-form button[type="submit"]:hover {
+    background: #218838;
+}
+
+#createButtonId button[type="button"]:hover {
+    background: #218838;
+}
+
+@media screen and (max-width: 600px) {
+    .container {
+        padding: 10px;
+    }
+
+    .event-list .event-grid {
+        flex-direction: column;
+    }
+
+    .event-card {
+        flex: 1 1 100%;
+    }
+
+    #event-form input[type="text"],
+    #event-form textarea,
+    #event-form input[type="datetime-local"],
+    #event-form input[type="number"] {
+        width: 100%;
+    }
+}

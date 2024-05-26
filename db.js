@@ -24,40 +24,9 @@ pool.getConnection((error, connection) => {
   }
 
   console.log('Hello Ashish, Database is connected Successfully');
-  // const createTableQuery = `
-  //   CREATE TABLE IF NOT EXISTS tasks (
-  //     id INT AUTO_INCREMENT PRIMARY KEY,
-  //     title VARCHAR(255) NOT NULL,
-  //     description TEXT,
-  //     dueDate DATE,
-  //     priority ENUM('Low', 'Medium', 'High') NOT NULL,
-  //     status ENUM('To-Do', 'Completed') DEFAULT 'To-Do',
-  //     assigned_to VARCHAR(255),
-  //     assigned_by VARCHAR(255)
-  //   )
-  // `;
-  // connection.query(createTableQuery, (err, result) => {
-  //   if (err) {
-  //     console.error('Error creating table:', err.message);
-  //   } else {
-  //     console.log('Table "tasks" created successfully.');
-  //   }
-   
-  // });
-
   // Release the connection back to the pool when done with it
   connection.release();
 });
-
-
-// pool.query(`select * from users`, function(err, result, fields) {
-//   if (err) {
-//       return console.log(err);
-//   }
-//   return console.log(result);
-// })
-
-
 
 // Function to fetch data from the database
 function fetchData(callback) {
