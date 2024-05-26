@@ -3,6 +3,12 @@ const urlParams = new URLSearchParams(window.location.search);
 const userId = urlParams.get('id');
 $("#userId").val(userId);  // Set userId to hidden input field
 
+const firstName = urlParams.get('firstname');
+const lastName = urlParams.get('lastname');
+const userFullName = `${firstName} ${lastName}`;
+
+document.getElementById('gg').textContent = userFullName;
+
 const messagesDiv = $("#messages");
 const messageForm = $("#message-form");
 const messageInput = $("#message-input");
@@ -39,43 +45,43 @@ const convertToIST = (dateString) => {
     return new Intl.DateTimeFormat("en-US", options).format(date);
 };
 
+
 socket.on("chat message", (data) => {
-    const messageElement = $("<p></p>").addClass(data.sender_id == userId ? 'sent' : 'received');
+    const messageContainer = $("<div></div>").addClass(data.sender_id == userId ? 'sent' : 'received');
     const sentAtIST = convertToIST(data.sent_at);
     const usernameClass = `username-color-${data.sender_id % 6 + 1}`;
-    // const usernameId = "username-id";
 
-    if (data.sender_id == userId) {
-        messageElement.html(`${data.content} <br><span>${sentAtIST}</span>`);
-    } else {
-        messageElement.html(`<strong class="${usernameClass} username-class" id="username-id">${data.fullName} (${sentAtIST}):</strong> ${data.content}`);
-    }
+    const userIdDiv = $(`<div class="user-id">ID: ${data.sender_id}</div>`);
+    const usernameDiv = $(`<div class="${usernameClass} username-class" id="username-id">${data.fullName}</div>`);
+    const timeDiv = $(`<div class="time">${sentAtIST}</div>`);
+    const contentDiv = $(`<div class="message-content">${data.content}</div>`);
+
     
-    messagesDiv.append(messageElement);
+
+    messageContainer.append(userIdDiv, usernameDiv, timeDiv, contentDiv);
+
+    messagesDiv.append(messageContainer);
     scrollToBottom();
     adjustMessagesHeight();
 });
 
-messageForm.on("submit", (e) => {
-    e.preventDefault();
-    sendMessage();
-    messageInput.val("");
-});
+
 
 const fetchOldMessages = () => {
     $.get('/messages', (data) => {
         data.forEach((message) => {
             const formattedTimestamp = convertToIST(message.sent_at);
-            const messageElement = $("<p></p>").addClass(message.sender_id == userId ? 'sent' : 'received');
+            const messageContainer = $("<div></div>").addClass(message.sender_id == userId ? 'sent' : 'received');
             const usernameClass = `username-color-${message.sender_id % 4 + 1}`;
-            
-            if (message.sender_id == userId) {
-                messageElement.html(`${message.content} <br><span>${formattedTimestamp}</span>`);
-            } else {
-                messageElement.html(`<strong class="${usernameClass}">${message.fullName} (${formattedTimestamp}):</strong> ${message.content}`);
-            }
-            
-            messagesDiv.append(messageElement);
+
+            const userIdDiv = $(`<div class="user-id">ID: ${message.sender_id}</div>`);
+            const usernameDiv = $(`<div class="${usernameClass}">${message.fullName}</div>`);
+            const timeDiv = $(`<div class="time">${formattedTimestamp}</div>`);
+            const contentDiv = $(`<div class="message-content">${message.content}</div>`);
+
+            messageContainer.append(userIdDiv, usernameDiv, timeDiv, contentDiv);
+
+            messagesDiv.append(messageContainer);
         });
 
         adjustMessagesHeight();
@@ -83,6 +89,18 @@ const fetchOldMessages = () => {
     });
 };
 
+
+
+messageForm.on("submit", (e) => {
+    e.preventDefault(); // Prevent form from submitting in the traditional way
+    sendMessage();
+    messageInput.val(''); // Clear the message input field after sending
+});
+
+
 $(document).ready(() => {
     fetchOldMessages();
+
+    // Add event listener for form submission
+    
 });

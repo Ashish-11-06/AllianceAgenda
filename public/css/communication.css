@@ -1,50 +1,160 @@
 
+
+body
+{
+    /* background: linear-gradient(to bottom left, #79C7C5 40%, #F9FBFF 100%); */
+    
+    background: url('/bg_BLUE.png') no-repeat center center;
+
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    
+}
+
+
+.container{
+    /* border: 2px red solid;  */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; 
+
+    
+}
+
+.heading
+{
+    display: flex;
+    flex-direction: column;
+    align-self: flex-start;
+    margin-left: 200px;
+    height: 50px;
+    width: 500px;
+    background: #285ba5;
+    /* opacity: 0.75; */
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    color: white;
+    font-size: 20px;
+}
+
+span
+{
+    margin-left: 20px;
+}
+
+#refreshButton
+{
+    margin-right: 5%;
+    margin-top: 2%;
+    /* border: 2px red solid; */
+    align-self: flex-end;  
+    background-color: #ffffff; 
+    border-radius: 10px; 
+}
+
+img
+{
+    height: 20px;
+    width: 20px;
+    transition: all 0.1s ease;
+}
+
+img:hover
+{
+    padding: 3px 3px;
+    /* height: 30px;
+    width: 30px;; */
+    cursor: pointer;
+}
+
+
+
 #messages {
-    border: 1px solid #fe0404;
-    padding: 20px;
+    align-self: flex-start;
+    margin-left: 200px;
+    /* border: 2px red solid; */
+    padding: 50px;
     overflow-y: auto;
-    width: 100%;
-    max-width: 800px;
-    height: 200px;
+    width: 400px;
+    height: 30%;
     transition: height 0.3s;
-    background-color: #15335339;
+    /* box-shadow: 10px 10px 30px black; */
+    
+    background: #f9fbff;
+    opacity: 0.75;
 }
 
 #message-form {
+    align-self: flex-start;
+    margin-left: 200px;
     display: flex;
-    width: 100%;
-    max-width: 800px;
-    background-color: #f2f2f2;
+    width: 479px;
+    background: #285ba5;
     padding: 10px;
-    border: 1px solid #ccc;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+
 }
 
 #message-input {
     flex-grow: 1;
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border: none;
+    border-radius: 12px;
     margin-right: 10px;
     font-size: 16px;
+    
 }
 
-button {
-    padding: 10px 20px;
-    background-color: #007bff;
+
+.chatTitle
+{
     color: white;
+    font-size: 65px;
+    position: absolute;
+    top: 50%;
+    left: 70%;
+    opacity: 0.9;
+}
+
+
+.allianceTitle
+{
+    color: white;
+    font-size: 28px;
+    position: absolute;
+    top: 47%;
+    left: 70%;
+    opacity: 0.3;
+}
+
+
+
+#submitButton {
+    font-size: 15px;
+
+    padding: 10px 20px;
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
     border: none;
-    border-radius: 5px;
+    border-radius: 20px;
     cursor: pointer;
 }
 
-button:hover {
-    background-color: #0056b3;
+#submitButton:hover {
+    background-color: #000000;
+    color: rgb(255, 255, 255);
+    border: 1px solid black;
 }
 
 p {
-    margin: 5px 0;
-    font-size: 14px;
+    border: 1px solid black;
+    /* margin: 5px 0; */
+    font-size: 13px;
+    background-color: #A1E2D9;
 }
 
 #messages p {
@@ -79,28 +189,29 @@ p {
 
 /* Username colors */
 .username-color-1 {
-    color: #007bff51;
+    color: black;
+
 }
 
 .username-color-2 {
-    color: #269f434a;
+    color: black;
 }
 
 .username-color-3 {
-    color: #96fcf77a;
+    color: black;
 }
 
 
 .username-color-4 {
-    color: #ffc1075a;
+    color: black;
 }
 
 .username-color-5 {
-    color: #3407ff1f;
+    color: black;
 }
 
 .username-color-6 {
-    color: #ffb9073a;
+    color: black;
 }
 
 #username-id{
@@ -110,3 +221,66 @@ p {
 .username-class{
     border: 6px #fe0404;
 }
+
+
+
+/* ------------------------------------------------------------------------------- */
+
+
+
+.sent, .received {
+    /* display: inline-block; Ensures the div does not expand to full width */
+    margin-bottom: 10px;
+    padding: 5px;
+    border-radius: 5px;
+    max-width: 100%; /* Adjust as needed */
+    word-wrap: break-word; /* Ensure long words break correctly */
+}
+
+.user-id, .username-class, .time, .message-content {
+    margin: 2px 0;
+}
+
+.user-id
+{
+    /* border: 1px blue solid ; */
+    font-size: 12px;
+}
+
+.time
+{
+    font-size: 12px;
+}
+
+/* .username-class {
+    font-weight: bold;
+} */
+
+.message-content {
+    padding: 5px;
+    background-color: #f1f1f1;
+    border-radius: 10px;
+    display: inline-block; 
+    font-size: 20px;
+    word-wrap: break-word; /* Ensures the text wraps inside the container */
+    word-break: break-word; /* Ensures the text breaks at words if necessary */
+    overflow-wrap: break-word; /* Ensures the text wraps inside the container */
+}
+
+.sent .message-content {
+    padding: 8px;
+    background-color: #306ed0;
+    color: white;
+}
+
+.received .message-content
+{
+    padding: 8px;
+    background-color: #306ed0;
+    color: white;
+}
+/* .received {
+    border: 1px solid black;
+} */
+
+

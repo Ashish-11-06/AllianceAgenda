@@ -12,12 +12,23 @@
 </head>
 
 <body>
-    <div id="messages"></div>
-    <form id="message-form">
-        <input type="hidden" id="userId"> 
-        <input type="text" id="message-input" placeholder="Type your message here...">
-        <button type="submit">Send</button>
-    </form>
+    
+    <div class="allianceTitle">Alliance-Agenda</div>
+    <div class="chatTitle">Chats</div>
+    <div class="container">
+        <div class="heading">
+            <span id="gg"></span>
+            <button id="refreshButton" onclick="window.location.reload()"><img src="/refreshLogo.png" alt=""></button></div>
+        <div id="messages"></div>
+        <form id="message-form">
+            <input type="hidden" id="userId"> 
+            <input type="text" id="message-input" placeholder="Type your message here...">
+            <button type="submit" id="submitButton">Send</button>
+        </form>
+    </div>
+
+    
+    
 
     <script src="/scripts/comScript.js"></script>
 
