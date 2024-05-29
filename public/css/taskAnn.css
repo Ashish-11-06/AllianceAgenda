@@ -1,0 +1,74 @@
+
+.announcement-container,
+.task-container{
+    border: 2px red;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.announcement-title, .task-title{
+    margin-bottom: 2px;
+    color: #00c3af;
+}
+
+.announcement-content, .task-content{
+    margin-bottom: 2px;
+}
+
+.announcement-created-by, .task-created-by,
+.task-created-at, .announcement-created-at{
+    opacity: 0.5;
+    margin-bottom: 1px;
+    font-size: 13px;
+}
+
+.announcement-separator, .task-separator{
+    margin-top: 2px;
+}
+
+#announcement-button, .complete{
+    margin-top: 5px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#announcement-button:hover,
+.complete:hover {
+    background-color: #0056b3;
+    color: #ffffff;
+}
+
+.announcement-delete-button, .delete{
+    margin-top: 2px;
+    color: rgb(250, 72, 72);
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 15px;
+    opacity: 0.8;
+}
+
+#heading{
+    font-size: 100px;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.announcement-class, .task-class{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5px;
+}
+
+.announcement-class div, .task-class div {
+    padding: 2px;
+    background: linear-gradient(to left top, #033965, rgba(0, 191, 251, 0));
+}
+
+.feature-icon:hover,
+.feature-title{
+    cursor: pointer;
+}

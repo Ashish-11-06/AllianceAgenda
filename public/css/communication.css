@@ -189,21 +189,21 @@ p {
 
 /* Username colors */
 .username-color-1 {
-    color: black;
+    color: rgba(3, 197, 197, 0.649);
 
 }
 
 .username-color-2 {
-    color: black;
+    color: rgba(142, 2, 2, 0.745);
 }
 
 .username-color-3 {
-    color: black;
+    color: rgb(21, 81, 101);
 }
 
 
 .username-color-4 {
-    color: black;
+    color: rgb(97, 114, 0);
 }
 
 .username-color-5 {

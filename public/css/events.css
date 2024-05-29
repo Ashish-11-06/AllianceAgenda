@@ -12,6 +12,15 @@ body {
     padding: 0;
     transition: background-color 0.3s ease;
 }
+body
+{
+    /* background: linear-gradient(to bottom left, #79C7C5 40%, #F9FBFF 100%); */
+    
+    background: url('/bg_BLUE.png') no-repeat center center;
+
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    
+}
 
 .container {
     max-width: 800px;
@@ -19,11 +28,11 @@ body {
     background: #fff;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgb(65, 0, 244);
     transition: box-shadow 0.3s ease;
 }
 
-h2 {
+h2 {    
     text-align: center;
     color: #333;
     transition: color 0.3s ease;
@@ -54,7 +63,7 @@ h2 {
 }
 
 .event-card:hover {
-    background-color: #e9ecef;
+    background-color: #0a5aa958;
     transform: translateY(-5px);
 }
 

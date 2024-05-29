@@ -4,9 +4,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome</title>
+    <title>Gallery</title>
     <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:400,600" rel="stylesheet">
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="css/welcome.css">
 	<script src="https://unpkg.com/animejs@3.0.1/lib/anime.min.js"></script>
     <script src="https://unpkg.com/scrollreveal@4.0.0/dist/scrollreveal.min.js"></script>
 </head>
@@ -128,7 +128,9 @@
         
         <main>
             <section class="hero">
-                <h2 class="overlay" id="heading">welcome To the photo gallery</h2>
+                
+                <h2 class="overlay" id="heading">Hii <span id="username"></span></h2>
+                <h6>welcome to the gallery</h6>
                 <div class="container">
                     <div id="heading"></div>
                     <div class="hero-inner ">
@@ -153,7 +155,7 @@
                     </div>
                 </div>
                 
-                <div class="jumbotron overlay ">
+                <div class="overlay ">
                     <div class="container ">
                        
                         <div id="loader-container" class="loader-container">
@@ -204,13 +206,13 @@
       <script>
         // Retrieve the username from the query parameters
         const urlParams = new URLSearchParams(window.location.search);
-        const username = urlParams.get('username');
+        const firstName = urlParams.get('firstname');
 
         // Display the username on the page
-        document.getElementById('username').textContent = username;
+        document.getElementById('username').textContent = firstName;
 
         function uploadPhoto(event) {
-            event.preventDefault(); // Prevent default form behavior
+            // event.preventDefault(); // Prevent default form behavior
 
             const form = event.target; // Get the form
             const formData = new FormData(form); // Create FormData for file upload
