@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>SignUp Signin</title>
-	<link rel="stylesheet" href="/login.css">
+	<link rel="stylesheet" href="css/login.css">
 	<!-- ---------------------------------------------------------------------------------------------------------------------- -->
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
@@ -17,12 +17,13 @@
 			<div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-md-8 col-md-offset-2">
 				<div id="userform">
 					<ul class="nav nav-tabs nav-justified" role="tablist">
-						<li class="active"><a href="#signup" role="tab" data-toggle="tab">Sign up</a></li>
-						<li><a href="#login" role="tab" data-toggle="tab">Log in</a></li>
+						<li class="active"><a href="#login" role="tab" data-toggle="tab">Log in</a></li>
+						<li><a href="#signup" role="tab" data-toggle="tab">Sign up</a></li>
+						
 					</ul>
 					<div class="tab-content">
-						<div class="tab-pane fade active in" id="signup">
-							<h2 class="text-uppercase text-center"> Sign Up for ASM'S</h2>
+						<div class="tab-pane fade in" id="signup">
+							<h2 class=" text-center"> Sign Up for AllianceAgenda</h2>
 							<form action="/submit-form" method="post" id="signup">
 								<div class="row">
 									<div class="col-xs-12 col-sm-6">
@@ -93,7 +94,7 @@
 								</div>
 							</form>
 						</div>
-						<div class="tab-pane fade in" id="login">
+						<div class="tab-pane fade active in" id="login">
 							<h2 class="text-uppercase text-center"> Log in</h2>
 							<form action="/login" method="POST" id="login">
 								<div class="form-group">
