@@ -3,6 +3,9 @@ INTRODUCTION TO THE PROJECT :
 	With our user-friendly interface and robust features, keeping track of chores, appointments, and important events has never been easier. From grocery shopping lists to coordinating school pickups, our app centralizes all your family's to-dos in one convenient location.
 	Say goodbye to sticky notes on the fridge and missed reminders. Our app allows you to assign tasks to specific family members, set deadlines, and receive real-time notifications, ensuring everyone stays on track and accountable.
 
+WORK IN PROGRESS...............
+
+
 MODULES:
 
 1)User Management Module:
@@ -11,7 +14,7 @@ MODULES:
     • User authentication: Enable users to log in securely.
     • User profiles: Provide the ability for users to manage their profiles.
 
-2)Calendar Module:
+2)Event Module:
 
     • Event creation: Allow users to add events, appointments, birthdays, etc.
     • Event categorization: Enable users to categorize events (e.g., family gatherings, birthdays, holidays).
