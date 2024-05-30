@@ -11,7 +11,7 @@ const pool = mysql.createPool({
   // timezone: '+05:30',
   port: 13776,
   ssl: {
-    ca: fs.readFileSync('C:\\AllianceAgenda\\caAsh.pem'),           // Path to CA Certificate
+    ca: fs.readFileSync('caAsh.pem'),           // Path to CA Certificate
 
   },
 
