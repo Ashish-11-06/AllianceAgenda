@@ -2,7 +2,7 @@ body
 {
     /* background: linear-gradient(to bottom left, #79C7C5 40%, #F9FBFF 100%); */
     
-    background: url('/bg_BLUE.png') no-repeat center center;
+    background: url('../images/bg_BLUE.jpg') no-repeat center center;
 
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     
@@ -15,20 +15,17 @@ body
     font-size: 24px;
 }
 
-.navbar-nav .nav-link {
-    color: white;
-}
 
-.navbar-nav .nav-link:hover {
-    color: #f0ad4e;
-}
+
 
 .jumbotron {
-    background-image: url("https://images.unsplash.com/photo-1508615070457-7baeba4003e1?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80");
+    /* background-image: url("https://images.unsplash.com/photo-1508615070457-7baeba4003e1?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80"); */
     background-size: cover;
-    background-position: center;
-    height: 40vh;
-    color: white;
+    /* background-position: center; */
+    /* height: 40vh; */
+    /* color: rgb(50, 65, 85); */
+    background-color: #1e34466f;
+
 }
 
 .jumbotron .display-4 {
@@ -41,17 +38,20 @@ body
 }
 
 .jumbotron .btn {
-    background-color: #f0ad4e;
+   
+    background-color: #5ac2c4;
     border: none;
     border-radius: 10px;
 }
 
 .jumbotron .btn:hover {
-    background-color: #ec971f;
+    background-color: #2b8e9d;
+    box-shadow: 0 6px 12px rgba(255, 255, 255, 0.322);
+    
 }
 
 .features {
-    padding: 40px 0;
+    margin-top: 20px;
 }
 
 .features .card {
@@ -60,7 +60,7 @@ body
 }
 
 .features .card:hover {
-    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 6px 12px rgba(255, 255, 255, 0.322);
 }
 
 .features .card-img-top {
@@ -71,35 +71,32 @@ body
 .features .card-title {
     font-weight: bold;
 }
-
-.features .card-text {
-    color: #777;
+.card-body{
+    background-color: #2b8e9d;
 }
+
+/* .features .card-text {
+    color: #777;
+} */
 
 .footer {
-    background-color: #333;
-    color: white;
-    padding: 20px 0;
+    background-color: #3333336f;
+    color: rgb(38, 160, 178);
+    /* padding: 20px 0; */
 }
 
-.footer .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+
 
 .footer .social-icons a {
-    color: white;
-    margin: 0 10px;
+    color: rgb(204, 19, 19);
+    /* margin: 0 10px; */
 }
 
 .footer .social-icons a:hover {
     color: #f0ad4e;
 }
 
-.footer p {
-    margin: 0;
-}
+
 h1, p{
-    color: rgb(36, 255, 255);
+    color: rgb(192, 232, 232);
 }

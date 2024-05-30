@@ -16,7 +16,7 @@ body
 {
     /* background: linear-gradient(to bottom left, #79C7C5 40%, #F9FBFF 100%); */
     
-    background: url('/bg_BLUE.png') no-repeat center center;
+    background: url('../images/bg_BLUE.jpg') no-repeat center center;
 
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     
