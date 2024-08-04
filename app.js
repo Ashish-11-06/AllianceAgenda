@@ -628,8 +628,18 @@ app.delete('/events/:event_id', (req, res) => {
 
 
 
-server.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+// server.listen(port, () => {
+//   console.log(`Server is running on port ${port}`);
+//    // Open the browser automatically
+//    open(`http://localhost:${PORT}`);
+// });
+
+server.listen(port, async () => {
+  console.log(`Server is running on http://localhost:${port}`);
+  
+  // Use dynamic import to load the open module
+  const open = await import('open');
+  open.default(`http://localhost:${port}`);
 });
 
 // app.listen(port, () => {
