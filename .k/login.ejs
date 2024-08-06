@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>SignUp Signin</title>
+	<link rel="stylesheet" href="css/login.css">
+	<!-- ---------------------------------------------------------------------------------------------------------------------- -->
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+</head>
+
+<body>
+	<div id="background-img"></div>
+	<div id="form">
+		<div class="container">
+			<div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-md-8 col-md-offset-2">
+				<div id="userform">
+					<ul class="nav nav-tabs nav-justified" role="tablist">
+						<li class="active"><a href="#login" role="tab" data-toggle="tab">Log in</a></li>
+						<li><a href="#signup" role="tab" data-toggle="tab">Sign up</a></li>
+						
+					</ul>
+					<div class="tab-content">
+						<div class="tab-pane fade in" id="signup">
+							<h2 class="text-uppercase text-center"> Sign Up for AllianceAgenda</h2>
+							<form action="/submit-form" method="post" id="signup">
+								<div class="row">
+									<div class="col-xs-12 col-sm-6">
+										<div class="form-group">
+											<label for="firstname">First Name<span class="req">*</span> </label>
+											<input name="firstname" type="text" class="form-control" id="first_name"
+												required data-validation-required-message="Please enter your name."
+												autocomplete="off">
+											<p class="help-block text-danger"></p>
+										</div>
+									</div>
+									<div class="col-xs-12 col-sm-6">
+										<div class="form-group">
+											<label for="lastname"> Last Name<span class="req">*</span> </label>
+											<input name="lastname" type="text" class="form-control" id="last_name"
+												required data-validation-required-message="Please enter your name."
+												autocomplete="off">
+											<p class="help-block text-danger"></p>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="email"> Your Email<span class="req">*</span> </label>
+									<input name="email" type="email" class="form-control" id="email" required
+										data-validation-required-message="Please enter your email address."
+										autocomplete="off">
+									<p class="help-block text-danger" id="alert-message" style="color: #f25757; " > <% if (typeof error !== 'undefined') { %>
+										<%= error %>
+									  <% } %></p>
+								</div>
+								<div class="form-group">
+									<label for="phone_number"> Your Phone<span class="req">*</span> </label>
+									<input name="phone_number" input type="tel" id="phone" name="phone" required
+									pattern="^[789]\d{9}$"
+									title="Please enter a valid 10-digit mobile number, starting with 7, 8, or 9" class="form-control" 
+										autocomplete="off">
+									<p class="help-block text-danger"></p>
+								</div>
+
+								<div class="form-group">
+									<label for="option">designation: *<span class="req">*</span></label>
+									<select name="designation" class="form-control" id="option" required>
+										<option >select your designation</option>
+										<option value="Director">Director</option>
+										<option value="HOD">Head of Department</option>
+										<option value="Staff">Staff</option>
+									</select>
+									<p class="help-block text-danger"></p>
+								</div>
+
+								<div class="form-group">
+									<label for="password"> Password<span class="req">*</span> </label>
+									<input name="password" type="password" class="form-control" id="password" 
+									pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$"
+         title="Password must be at least 6 characters long, containing at least one uppercase letter, one lowercase letter, one digit, and one special character" required
+										data-validation-required-message="Please enter your password"
+										autocomplete="off">
+									<p class="help-block text-danger" id="alert-message" style="color: #93fb76; "><% if (success) { %>
+										  <%= success %>
+									  <% } %></p>
+								</div>
+
+								<div class="mrgn-30-top">
+									<button type="submit" class="btn btn-larger btn-block">
+										Sign up
+									</button><p class="help-block text-danger" ></p>
+									
+								</div>
+							</form>
+						</div>
+						<div class="tab-pane fade active in" id="login">
+							<h2 class="text-uppercase text-center"> Log in</h2>
+							<form action="/login" method="POST" id="login">
+								<div class="form-group">
+									<label> Your Email<span class="req">*</span> </label>
+									<input type="email" class="form-control" name="email" id="email" required
+										data-validation-required-message="Please enter your email address."
+										autocomplete="off">
+									<p class="help-block text-danger"></p>
+								</div>
+
+								<div class="form-group">
+									<label> Password<span class="req">*</span> </label>
+									<input type="password" class="form-control" name="password" id="password" required
+										data-validation-required-message="Please enter your password"
+										autocomplete="off">
+									<p class="help-block text-danger"></p>
+								</div>
+								<div class="mrgn-30-top">
+									<button type="submit" class="btn btn-larger btn-block" />
+									Log in
+									</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /.container -->
+	</div>
+	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+	<!-- partial -->
+	<!-- <script  src="./script.js"></script> -->
+
+	<script>
+
+		$('#form').find('input, textarea, select').on('keyup blur focus mouseenter', function (e) {
+
+			var $this = $(this),
+				label = $this.prev('label');
+
+			if (e.type === 'keyup' || e.type === 'mouseenter') {
+				if ($this.val() === '') {
+					label.removeClass('active highlight');
+				} else {
+					label.addClass('active highlight');
+				}
+			} else if (e.type === 'blur') {
+				if ($this.val() === '') {
+					label.removeClass('active highlight');
+				} else {
+					label.removeClass('highlight');
+				}
+			} else if (e.type === 'focus') {
+
+				if ($this.val() === '') {
+					label.removeClass('highlight');
+				}
+				else if ($this.val() !== '') {
+					label.addClass('highlight');
+				}
+			}
+
+		});
+
+		$('.tab a').on('click', function (e) {
+
+			e.preventDefault();
+
+			$(this).parent().addClass('active');
+			$(this).parent().siblings().removeClass('active');
+
+			target = $(this).attr('href');
+
+			$('.tab-content > div').not(target).hide();
+
+			$(target).fadeIn(400);
+
+		});
+
+		// Client-side form submission handling
+		$('#signupForm').submit(function(event) {
+        event.preventDefault(); // Prevent default form submission
+        
+        var formData = $(this).serialize(); // Serialize form data
+
+    });
+
+	
+
+	</script>
+	<script>
+		// Wait for the document to be ready
+		$(document).ready(function() {
+      // Hide success message after 5 seconds
+      setTimeout(function() {
+        $('#alert-message').fadeOut('slow');
+      }, 5000);
+
+    });
+	
+	  </script>
+
+</body>
+
+</html>
