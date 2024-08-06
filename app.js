@@ -45,15 +45,16 @@ app.post('/submit-form', async (req, res) => {
 });
 
 //  ------------------------------------------------------------------------------------------
+app.get('/', (req, res) => {
+  res.render('index');
+});
 
 app.get('/try', (req, res) => {
   res.render('try');
 });
 
 
-app.get('/', (req, res) => {
-  res.render('index');
-});
+
 
 app.get('/login', (req, res) => {
   const error = req.query.error;
