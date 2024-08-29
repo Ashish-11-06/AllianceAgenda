@@ -10,9 +10,7 @@ Welcome to **Alliance Agenda**! This project is focused on building innovative s
   - [Installation](#installation)
   - [Running the Application](#running-the-application)
 - [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
-- [Acknowledgments](#acknowledgments)
+
 
 ## About the Project
 
